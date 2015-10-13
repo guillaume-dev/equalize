@@ -70,7 +70,8 @@ class Sun {
 
         this.mesh = new THREE.Points( this.geometry, this.material );
 
-        this.mesh.position.y = 45;
+        this.mesh.position.y = 39;
+        this.mesh.position.z = 36;
 
         this.clock = Date.now();
 
@@ -95,6 +96,8 @@ class Sun {
         }
 
         average /= 512;
+
+        this.mesh.rotation.z -= 0.001;
 
         this.mesh.material.uniforms[ 'frequency' ].value = average;
 

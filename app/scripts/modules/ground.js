@@ -9,7 +9,23 @@ class Ground {
 
         this.length = 20;
 
-        this.geometry = new THREE.PlaneGeometry( this.length, this.length, 32, 32 );
+        let geometry = new THREE.PlaneGeometry( this.length, this.length, 32, 32 );
+
+        console.log( geometry.vertices.length );
+
+        this.geometry = new THREE.BufferGeometry().fromGeometry( geometry );
+
+        this.indexes = [];
+
+        for ( let i = 0; i < this.geometry.attributes.position.array.length / 3; i++ ) {
+
+            this.indexes[ i ] = parseFloat( i );
+
+        }
+
+        this.geometry.addAttribute( 'bufferindex', new THREE.BufferAttribute( this.indexes, 1 ) );
+
+        this.geometry.addAttribute( 'frequency', new THREE.BufferAttribute( [], 1 ) );
 
         this.vertexShader = glslify('../../vertex-shaders/ground.vert');
 
@@ -18,6 +34,7 @@ class Ground {
         this.material = new THREE.ShaderMaterial({
             uniforms: { 
                 time: { type: "f", value: 0 },
+                // frequency: { type: "fv1", value: [] }
             },
             vertexShader: this.vertexShader,
             fragmentShader: this.fragmentShader,
@@ -57,7 +74,9 @@ class Ground {
         let frequency = soundData.freq;
         let time = soundData.time;
 
-        // this.mesh.material.uniforms[ 'time' ].value = Date.now() - this.clock;
+        this.mesh.geometry.addAttribute( 'frequency', new THREE.BufferAttribute( frequency, 1 ) );
+
+        // this.mesh.material.uniforms[ 'frequency' ].value = frequency;
 
     }
     

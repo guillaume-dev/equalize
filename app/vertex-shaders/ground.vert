@@ -1,6 +1,9 @@
 #pragma glslify: cnoise = require(./classicnoise4D)
 
 uniform float time;
+attribute float frequency;
+varying vec3 vPosition;
+varying vec2 vUv;
 
 float noise( float x, float y ) {
 
@@ -10,7 +13,8 @@ float noise( float x, float y ) {
 
 void main() {
 
-    vec3 vPosition = position;
+    vPosition = position;
+    vUv = uv;
 
     float easing = 0.0008;
 
@@ -18,7 +22,8 @@ void main() {
     // vPosition.y += (cnoise_1_4(vec4(vec3(vPosition), (time * easing))));
     // vPosition.z += (cnoise_1_4(vec4(vec3(vPosition), time * easing)));
 
-
+    float freq = frequency;
+     
     float dist = distance(vec2(vPosition.x, vPosition.y), vec2(0, 0));
     float size = 2.0;
     float magnitude = 1.0;
@@ -28,6 +33,6 @@ void main() {
     // vPosition.z *= sin( dist / size + ( time / 5000.0 ) ) * magnitude;
     // vPosition.z *= noise( position.x, position.y ) * cos( time * easing );
 
-	gl_Position  = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );
+	gl_Position  = projectionMatrix * modelViewMatrix * vec4( vPosition * frequency, 1.0 );
 
 }

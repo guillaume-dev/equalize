@@ -72,7 +72,7 @@ class GhettoBlaster {
 
         this.clock = Date.now();
 
-        this.scene.add( this.mesh );
+        // this.scene.add( this.mesh );
 
     }
 

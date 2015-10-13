@@ -61,9 +61,7 @@ class Wave {
 
             this.indexes[ i ] = parseFloat( i );
 
-        }
-
-        console.log( this.indexes );
+        };
 
         this.geometry.addAttribute( 'position', new THREE.BufferAttribute( this.vertices, 3 ) );
 

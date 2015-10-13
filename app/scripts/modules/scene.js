@@ -3,6 +3,8 @@ import { Wave } from './wave';
 import { Ground } from './ground';
 import { Sun } from './sun';
 import { GhettoBlaster } from './ghettoblaster';
+import { Broken } from './broken';
+import { Sphere } from './sphere';
 
 
 let THREE = require('../vendors/three.min');
@@ -44,9 +46,17 @@ class Scene {
     	this.scene = new THREE.Scene();
     	this.camera = new THREE.PerspectiveCamera( 45, this.params.width / this.params.height, 1, 10000 );
 
-    	this.scene.add( this.camera );
+    	this.raycaster = new THREE.Raycaster();
+        this.mouse = new THREE.Vector2();
+
+
+        window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false );
 
         // this.addWave();
+
+        this.addSphere();
+
+        this.addBroken();
 
         this.addSun();
 
@@ -77,12 +87,31 @@ class Scene {
 
     }
 
+    onMouseMove( event ) {
+
+        this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;     
+
+    }
+
     loadSound() {
 
         this.sound.load( "music/jedimind.mp3" );
         this.emitter.on( "start", () => {
             this.animate();
         });
+
+    }
+
+    addSphere() {
+
+        this.sphere = new Sphere( this.scene, this.emitter );
+
+    }
+
+    addBroken() {
+
+        this.broken = new Broken( this.scene, this.emitter );
 
     }
 
@@ -140,13 +169,27 @@ class Scene {
         
             window.requestAnimationFrame( this.animate.bind(this) );
 
+            this.raycaster.setFromCamera( this.mouse, this.camera );   
+
+            var intersects = this.raycaster.intersectObjects( this.scene.children );
+
+            for ( var i = 0; i < intersects.length; i++ ) {
+
+                // console.log( intersects[ i ] );
+            
+            }
+
             // this.wave.update( this.sound.getData() );
+
+            this.sphere.update( ts );
 
             this.ground.update( this.sound.getData() );
 
+            // this.broken.update( this.sound.getData() );
+
             this.sun.update( this.sound.getData() );
 
-            this.ghettoblaster.update( this.sound.getData() );
+            // this.ghettoblaster.update( this.sound.getData() );
 
             this.render( ts );
 
@@ -171,9 +214,9 @@ class Scene {
 
         this.keyboard.addObject( this.camera );
 
-        this.keyboard.addObject( this.ground.getMesh() );
+        this.keyboard.addObject( this.sphere.getMesh() );
 
-        // this.keyboard.addObject( this.wave.getMesh() );
+        this.keyboard.addObject( this.sun.getMesh() );
 
 
     }
