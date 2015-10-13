@@ -16,7 +16,7 @@ void main() {
     float easing = 0.0008;
 
     vPosition.x += (cnoise_1_4(vec4(vec3(vPosition), time * easing)));
-    vPosition.y += (cnoise_1_4(vec4(vec3(vPosition), (time * easing)))); //+ ( frequency / 100.0) )));
+    vPosition.y += (cnoise_1_4(vec4(vec3(vPosition), (time * easing)))); 
     vPosition.z += (cnoise_1_4(vec4(vec3(vPosition), time * easing)));
 
 

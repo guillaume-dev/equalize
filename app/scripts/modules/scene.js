@@ -1,6 +1,8 @@
 import { Keyboard } from './keyboard';
 import { Wave } from './wave';
 import { Ground } from './ground';
+import { Sun } from './sun';
+import { GhettoBlaster } from './ghettoblaster';
 
 
 let THREE = require('../vendors/three.min');
@@ -44,7 +46,9 @@ class Scene {
 
     	this.scene.add( this.camera );
 
-        this.addWave();
+        // this.addWave();
+
+        this.addSun();
 
         this.addGround();
 
@@ -88,6 +92,14 @@ class Scene {
 
     }
 
+    addSun() {
+
+        this.sun = new Sun( this.scene, this.emitter );
+
+        this.ghettoblaster = new GhettoBlaster( this.scene, this.emitter );
+
+    }
+
     addGround() {
 
         this.ground = new Ground( this.scene, this.emitter );
@@ -128,7 +140,13 @@ class Scene {
         
             window.requestAnimationFrame( this.animate.bind(this) );
 
-            this.wave.update( this.sound.getData() );
+            // this.wave.update( this.sound.getData() );
+
+            this.ground.update( this.sound.getData() );
+
+            this.sun.update( this.sound.getData() );
+
+            this.ghettoblaster.update( this.sound.getData() );
 
             this.render( ts );
 
@@ -155,7 +173,7 @@ class Scene {
 
         this.keyboard.addObject( this.ground.getMesh() );
 
-        this.keyboard.addObject( this.wave.getMesh() );
+        // this.keyboard.addObject( this.wave.getMesh() );
 
 
     }
