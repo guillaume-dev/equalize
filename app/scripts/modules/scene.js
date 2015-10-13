@@ -4,15 +4,14 @@ import { Ground } from './ground';
 
 
 let THREE = require('../vendors/three.min');
-let EffectComposer = require('three-effectcomposer')(THREE);
 let OrbitControls = require('three-orbit-controls')(THREE);
+let EffectComposer = require('three-effectcomposer')(THREE);
 
 
 class Scene {
 
     constructor( emitter, sound, options = {} ) {
 
-        console.log( OrbitControls );
     	this.emitter = emitter;
         this.sound = sound;
     	this.scene = null;
@@ -53,14 +52,13 @@ class Scene {
 
         this.addLights();
 
-        
-
         this.renderer = new THREE.WebGLRenderer({
 	        antialias: true
 	    });
 
 	    this.renderer.setClearColor(  0xffffff, 1 );
     	this.renderer.setSize( this.params.width, this.params.height );
+        this.renderer.shadowMap.enabled = true;
 
     	this.composer = new EffectComposer( this.renderer );
 
@@ -68,9 +66,10 @@ class Scene {
 
     	this.clock = Date.now();
 
+    	this.addListeners();
+
         this.addControls();
 
-    	this.addListeners();
 
     }
 
@@ -79,9 +78,6 @@ class Scene {
         this.sound.load( "music/jedimind.mp3" );
         this.emitter.on( "start", () => {
             this.animate();
-          // loop.add( () => {
-          //   xp.update( sound.getData() )
-          // })
         });
 
     }
@@ -106,20 +102,21 @@ class Scene {
 
     addLights() {
 
-        var ambient = new THREE.AmbientLight( 0x777777 );
+        var ambient = new THREE.AmbientLight( 0xff0000 );
+        ambient.position.set(0, 0, -100);
         this.scene.add( ambient );
 
         var directionalLight = new THREE.DirectionalLight( 0xe2ffaa );
         directionalLight.position.x = 0;
         directionalLight.position.y = -1;
-        directionalLight.position.z = -1;
+        directionalLight.position.z = -145;
         directionalLight.position.normalize();
         this.scene.add( directionalLight );
 
 
         var light = new THREE.SpotLight( 0x999999, 2, 0 );
-        light.position.set( -500, 9500, -12000 );
-        light.target.position.set( 0, 0, -11990 );
+        light.position.set( 0, 0, -145 );
+        light.target.position.set( 0, 0, 0 );
         light.castShadow = true;
         this.scene.add( light );
 
