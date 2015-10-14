@@ -24,8 +24,8 @@ class Sphere {
             },
             vertexShader: this.vertexShader,
             fragmentShader: this.fragmentShader,
-            shading: THREE.SmoothShading,
-            wireframe: false
+            shading: THREE.FlatShading,
+            wireframe: true
             
         } );
     
@@ -45,7 +45,29 @@ class Sphere {
 
     }
 
-    update( ts ) {
+    update( soundData ) {
+
+        let frequency = soundData.freq;
+        let time = soundData.time;
+
+        let average = 0;
+
+        for(var i = 0; i < time.length; i++) {
+            average += time[ i ];
+        }
+
+        average /= 512;
+        
+        // if ( Math.abs( average - 128 ) > 100 ) {
+        //     this.weight += 0.001;
+        // } else if ( Math.abs( average - 128 ) > 115 ) {
+        //     this.weight += 0.003;
+        // } else {
+        //     this.weight -= 0.01;
+        // }
+
+
+
 
         this.meshMaterial.uniforms[ 'time' ].value = this.speed * ( Date.now() - this.clock );
         

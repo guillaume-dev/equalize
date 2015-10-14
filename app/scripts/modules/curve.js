@@ -1,19 +1,21 @@
 let THREE = require('../vendors/three.min');
 let glslify = require('glslify');
 
-class Sun {
+class Curve {
 
-    constructor( scene, emitter, options = {} ) {
+    constructor( scene, posX, posY, posZ, i ) {
 
         this.scene = scene;
 
+        this.index = i;
+
         this.particlesCount = 10000;
 
-        this.length = 30;
+        this.length = 100;
 
         this.geometry = new THREE.BufferGeometry();
 
-        this.vertexShader = glslify('../../vertex-shaders/sun.vert');
+        this.vertexShader = glslify('../../vertex-shaders/curve.vert');
 
         this.fragmentShader = glslify('../../fragment-shaders/simple.frag');
 
@@ -40,7 +42,7 @@ class Sun {
 
         for ( let i = 0; i < this.vertices.length; i+=3 ) {
 
-            let theta = (i / this.particlesCount) * Math.PI * 2;
+            let theta = (i / this.particlesCount) * ( Math.PI / 3 );
 
             let x = Math.cos(theta) * this.length;
 
@@ -68,13 +70,15 @@ class Sun {
 
         this.mesh = new THREE.Points( this.geometry, this.material );
 
-        this.mesh.position.y = 39;
-        this.mesh.position.z = 36;
+        this.mesh.position.z = posZ;
+
+        // this.mesh.position.y = 35;
+
+        this.mesh.rotation.z = posZ;
 
         this.clock = Date.now();
 
         this.scene.add( this.mesh );
-
     }
 
     getMesh() {
@@ -85,23 +89,27 @@ class Sun {
 
     update( soundData ) {
 
-        let frequency = soundData.freq;
         let time = soundData.time;
         let average = 0;
+        let multiplicator = ( 512 / 8 );
+        let start = this.index * multiplicator;
+        let stop = start + multiplicator;
 
-        for(var i = 0; i < time.length; i++) {
+        for(let i = start; i < stop; i++) {
             average += time[ i ];
         }
 
-        average /= 512;
+        average /= multiplicator;
 
-        this.mesh.rotation.z -= 0.001;
+        // this.mesh.rotation.z -= 0.001;
 
         this.mesh.material.uniforms[ 'frequency' ].value = average;
 
-        // this.mesh.material.uniforms[ 'frequency' ].value = time;
+        var elapsed = Date.now() - this.clock;
 
-        this.mesh.material.uniforms[ 'time' ].value = Date.now() - this.clock;
+        // this.mesh.rotation.z += time / 10000;
+
+        this.mesh.material.uniforms[ 'time' ].value = elapsed;
 
 
     }
@@ -109,4 +117,4 @@ class Sun {
 
 }
 
-export { Sun };
+export { Curve };

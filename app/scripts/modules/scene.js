@@ -5,6 +5,8 @@ import { Sun } from './sun';
 import { GhettoBlaster } from './ghettoblaster';
 import { Broken } from './broken';
 import { Sphere } from './sphere';
+import { Curves } from './curves';
+import { Floor } from './floor';
 
 
 let THREE = require('../vendors/three.min');
@@ -52,15 +54,19 @@ class Scene {
 
         window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false );
 
+        this.addCurves();
+
+        this.addFloor();
+
         // this.addWave();
 
-        this.addSphere();
+        // this.addSphere();
 
-        this.addBroken();
+        // this.addBroken();
 
-        this.addSun();
+        // this.addSun();
 
-        this.addGround();
+        // this.addGround();
 
         this.loadSound();
 
@@ -70,7 +76,7 @@ class Scene {
 	        antialias: true
 	    });
 
-	    this.renderer.setClearColor(  0xffffff, 1 );
+	    this.renderer.setClearColor(  0x000000, 1 );
     	this.renderer.setSize( this.params.width, this.params.height );
         this.renderer.shadowMap.enabled = true;
 
@@ -100,6 +106,18 @@ class Scene {
         this.emitter.on( "start", () => {
             this.animate();
         });
+
+    }
+
+    addCurves() {
+
+        this.curves = new Curves( this.scene, this.emitter );
+
+    }
+
+    addFloor() {
+
+        this.floor = new Floor( this.scene, this.emitter );
 
     }
 
@@ -179,17 +197,19 @@ class Scene {
             
             }
 
+            this.curves.update( this.sound.getData() );
+
             // this.wave.update( this.sound.getData() );
 
-            this.sphere.update( ts );
+            // this.sphere.update( this.sound.getData() );
 
-            this.ground.update( this.sound.getData() );
+            // this.ground.update( this.sound.getData() );
 
             // this.broken.update( this.sound.getData() );
 
-            this.sun.update( this.sound.getData() );
+            // this.sun.update( this.sound.getData() );
 
-            // this.ghettoblaster.update( this.sound.getData() );
+            this.floor.update( this.sound.getData() );
 
             this.render( ts );
 
@@ -202,6 +222,8 @@ class Scene {
     	if (!this.params.active)
         	this.params.active = true;
 
+        // this.camera.lookAt( 0    , 0, 0 );
+
         this.renderer.render( this.scene, this.camera );	
 
     }
@@ -212,13 +234,22 @@ class Scene {
 
     	this.keyboard = new Keyboard( this.emitter );	
 
+
+        // let curves = this.curves.getMesh();
+
+        // for ( let i = 0; i < curves.length; i++ ) {
+
+        //     this.keyboard.addObject( curves[ i ].getMesh() );
+        // }
+
+        this.keyboard.addObject( this.floor.getMesh() );
+
+        // this.keyboard.addObject( this.sphere.getMesh() );
+
+        // this.keyboard.addObject( this.sun.getMesh() );
+
+
         this.keyboard.addObject( this.camera );
-
-        this.keyboard.addObject( this.sphere.getMesh() );
-
-        this.keyboard.addObject( this.sun.getMesh() );
-
-
     }
 
     onWindowResize() {
