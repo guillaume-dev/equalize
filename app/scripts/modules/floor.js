@@ -17,6 +17,8 @@ class Floor {
             0x0000ff
         ];
 
+        this.frequencies = [];
+
         this.floorHeight = 8;
         this.floorWidth = 512 / 8;
         this.cubeWidth = 15;
@@ -94,15 +96,20 @@ class Floor {
 
 
         let frequency = soundData.freq;
-        // let time = soundData.time;
-        // console.log( this.mesh.children.length )
+
+        for ( let i = 0; i < frequency.length; i++ ) {
+
+            this.frequencies[ i ] = frequency[ i ];
+
+        }
+
         for ( let i = 0; i < this.mesh.children.length; i++ ) {
 
             let box = this.mesh.children[ i ];
 
-            let freq =  frequency[ i ];
-
-            box.material.uniforms[ 'frequency' ].value = freq;
+            let freq = (frequency[ i ] * 10) / 255;
+            // let freq = this.frequencies[ i ];
+            box.material.uniforms[ 'frequency' ].value = parseFloat( freq );
 
             box.material.uniforms[ 'time' ].value = Date.now() - this.clock;
 
