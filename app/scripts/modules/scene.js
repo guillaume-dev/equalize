@@ -7,6 +7,7 @@ import { Broken } from './broken';
 import { Sphere } from './sphere';
 import { Curves } from './curves';
 import { Floor } from './floor';
+import { Ribbon } from './ribbon';
 
 
 let THREE = require('../vendors/three.min');
@@ -57,6 +58,8 @@ class Scene {
         this.addCurves();
 
         this.addFloor();
+
+        this.addRibbon();
 
         // this.addWave();
 
@@ -139,6 +142,12 @@ class Scene {
 
     }
 
+    addRibbon() {
+
+        this.ribbon = new Ribbon( this.scene, this.emitter );
+
+    }
+
     addSun() {
 
         this.sun = new Sun( this.scene, this.emitter );
@@ -199,6 +208,8 @@ class Scene {
 
             this.curves.update( this.sound.getData() );
 
+            this.ribbon.update( this.sound.getData() );
+
             // this.wave.update( this.sound.getData() );
 
             // this.sphere.update( this.sound.getData() );
@@ -242,14 +253,14 @@ class Scene {
         //     this.keyboard.addObject( curves[ i ].getMesh() );
         // }
 
-        this.keyboard.addObject( this.floor.getMesh() );
+        this.keyboard.addObject( this.ribbon.getMesh() );
 
-        // this.keyboard.addObject( this.sphere.getMesh() );
+        // this.keyboard.addObject( this.floor.getMesh() );
 
         // this.keyboard.addObject( this.sun.getMesh() );
 
 
-        this.keyboard.addObject( this.camera );
+        // this.keyboard.addObject( this.camera );
     }
 
     onWindowResize() {

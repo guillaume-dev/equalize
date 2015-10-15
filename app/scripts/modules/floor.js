@@ -29,18 +29,9 @@ class Floor {
 
         this.vertexShader = glslify('../../vertex-shaders/floor.vert');
 
-        this.fragmentShader = glslify('../../fragment-shaders/simple.frag');
+        this.fragmentShader = glslify('../../fragment-shaders/floor.frag');
 
-        this.material = new THREE.ShaderMaterial({
-            uniforms: { 
-                time: { type: "f", value: 0.0 },
-                frequency: { type: "f", value: 0.0 },
-            },
-            vertexShader: this.vertexShader,
-            fragmentShader: this.fragmentShader,
-            shading: THREE.SmoothShading,
-            wireframe: true
-        });
+        this.geometry = new THREE.BoxGeometry( this.cubeWidth, this.cubeWidth, this.cubeWidth);
 
         let count = 0; 
 
@@ -52,9 +43,18 @@ class Floor {
 
                 posY = j * 15;
 
-                var geometry = new THREE.BufferGeometry().fromGeometry( new THREE.BoxGeometry( this.cubeWidth, this.cubeWidth, this.cubeWidth) );
+                var material = new THREE.ShaderMaterial({
+                    uniforms: { 
+                        time: { type: "f", value: 0.0 },
+                        frequency: { type: "f", value: 0.0 },
+                    },
+                    vertexShader: this.vertexShader,
+                    fragmentShader: this.fragmentShader,
+                    shading: THREE.FlatShading,
+                    // wireframe: true
+                });
 
-                var cube = new THREE.Mesh( geometry, this.material );
+                var cube = new THREE.Mesh( this.geometry, material );
 
                 cube.position.x = posX;
                 cube.position.y = posY;
@@ -71,11 +71,11 @@ class Floor {
 
         }
 
-        this.mesh.position.z = -500;
-        this.mesh.position.y = -60;
+        this.mesh.position.z = -562;
+        this.mesh.position.y = -100;
         this.mesh.position.x = -42;
 
-        this.mesh.rotation.x = -1.7;
+        this.mesh.rotation.x = -1.74;
         this.mesh.rotation.z = -1.6;
 
         this.clock = Date.now();
@@ -94,9 +94,9 @@ class Floor {
 
 
         let frequency = soundData.freq;
-        // let time = soundData.time;
-        // console.log( this.mesh.children.length )
-        for ( let i = 0; i < this.mesh.children.length; i++ ) {
+        let count = this.mesh.children.length;
+
+        for ( let i = 0; i < count; i++ ) {
 
             let box = this.mesh.children[ i ];
 
