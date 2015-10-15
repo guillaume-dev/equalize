@@ -1,16 +1,20 @@
-attribute float bufferindex;
-varying vec3 vPosition;
+
+uniform float time;
+uniform vec3 finalDest;
+
+// attribute float segment;
+
+varying float seg;
 
 void main() {
 
-	vPosition = position;
+	vec3 vPosition = position;
 
-	if ( bufferindex < 10.0 ) {
+	float easing = 1.0;
 
-		vPosition.y = 100.0;
+	vPosition.x += cos( time );
 
-	}
 
-	gl_Position  = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+	gl_Position  = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );
 
 }

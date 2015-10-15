@@ -16,7 +16,7 @@ class Keyboard {
 
     keydown( e ) {
 
-        console.log( e.keyCode );
+        // console.log( e.keyCode );
 
         // CTRL
         if ( e.keyCode == 17) {
