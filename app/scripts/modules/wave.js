@@ -7,9 +7,15 @@ class Wave {
 
         this.scene = scene;
 
+        this.emitter = emitter;
+
+        this.emitter.on('points_ready', () => {
+            this.start();
+        });
+
         this.particlesCount = 10000;
 
-        this.length = 30;
+        this.length = 60;
 
         this.geometry = new THREE.BufferGeometry();
 
@@ -69,17 +75,23 @@ class Wave {
 
         this.mesh = new THREE.Points( this.geometry, this.material );
 
-        this.mesh.position.x = -45;
-
-        this.clock = Date.now();
-
-        this.scene.add( this.mesh );
+        this.mesh.position.x = -90;
+        this.mesh.position.z = -300;
+        this.mesh.position.y = 70;
 
     }
 
     getMesh() {
 
         return this.mesh;
+
+    }
+
+    start() {
+
+        this.clock = Date.now();
+
+        this.scene.add( this.mesh );
 
     }
 
@@ -93,7 +105,7 @@ class Wave {
             average += time[ i ];
         }
 
-        average /= 512;
+        average /= 256;
 
         this.mesh.material.uniforms[ 'frequency' ].value = average;
 

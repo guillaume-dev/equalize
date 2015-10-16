@@ -1,18 +1,56 @@
 import { Keyboard } from './keyboard';
 import { Wave } from './wave';
-import { Ground } from './ground';
-import { Sun } from './sun';
-import { GhettoBlaster } from './ghettoblaster';
-import { Broken } from './broken';
-import { Sphere } from './sphere';
-import { Curves } from './curves';
-import { Floor } from './floor';
-import { Ribbon } from './ribbon';
+import { Points } from './points';
 
 
 let THREE = require('../vendors/three.min');
 let OrbitControls = require('three-orbit-controls')(THREE);
 let EffectComposer = require('three-effectcomposer')(THREE);
+// require('../../fragment-shaders/rgbshift');
+THREE.RGBShiftShader = {
+
+    uniforms: {
+
+        "tDiffuse": { type: "t", value: null },
+        "amount":   { type: "f", value: 0.0099 },
+        "angle":    { type: "f", value: 90.0 }
+
+    },
+
+    vertexShader: [
+
+        "varying vec2 vUv;",
+
+        "void main() {",
+
+            "vUv = uv;",
+            "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+        "}"
+
+    ].join("\n"),
+
+    fragmentShader: [
+
+        "uniform sampler2D tDiffuse;",
+        "uniform float amount;",
+        "uniform float angle;",
+
+        "varying vec2 vUv;",
+
+        "void main() {",
+
+            "vec2 offset = amount * vec2( cos(angle), sin(angle));",
+            "vec4 cr = texture2D(tDiffuse, vUv + offset);",
+            "vec4 cga = texture2D(tDiffuse, vUv);",
+            "vec4 cb = texture2D(tDiffuse, vUv - offset);",
+            "gl_FragColor = vec4(cr.r, cga.g, cb.b, cga.a);",
+
+        "}"
+
+    ].join("\n")
+
+};
 
 
 class Scene {
@@ -30,7 +68,7 @@ class Scene {
         this.controls = null;
 
     	this.params = {
-    		active: options.active || true,
+    		active: options.active || false,
 	        height: options.height || window.innerHeight,
 	        width: options.width || window.innerWidth
     	};
@@ -46,34 +84,31 @@ class Scene {
 
     init() {
 
-    	this.scene = new THREE.Scene();
-    	this.camera = new THREE.PerspectiveCamera( 45, this.params.width / this.params.height, 1, 10000 );
+        this.emitter.on( "ready", () => {
+            this.ready();
+        });
 
-    	this.raycaster = new THREE.Raycaster();
-        this.mouse = new THREE.Vector2();
+        this.emitter.on( "play", () => {
+            this.play();
+            this.emitter.emit('start');
+        });
 
+        this.emitter.on( "replay", () => {
 
-        window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false );
-
-        this.addCurves();
-
-        this.addFloor();
-
-        this.addRibbon();
-
-        // this.addWave();
-
-        // this.addSphere();
-
-        // this.addBroken();
-
-        // this.addSun();
-
-        // this.addGround();
+        });
 
         this.loadSound();
 
-        this.addLights();
+    	this.scene = new THREE.Scene();
+    	this.camera = new THREE.PerspectiveCamera( 45, this.params.width / this.params.height, 1, 10000 );
+
+        this.addPoints();
+
+        this.addWave();
+
+        // this.loadingBtn = ;
+        this.playBtn = document.getElementById("playBtn");
+        this.loadingBtn = document.getElementById("replayBtn");
 
         this.renderer = new THREE.WebGLRenderer({
 	        antialias: true
@@ -81,58 +116,38 @@ class Scene {
 
 	    this.renderer.setClearColor(  0x000000, 1 );
     	this.renderer.setSize( this.params.width, this.params.height );
-        this.renderer.shadowMap.enabled = true;
 
     	this.composer = new EffectComposer( this.renderer );
+        this.composer.addPass(new EffectComposer.RenderPass(this.scene, this.camera ))
+
+        this.RGBShift = new EffectComposer.ShaderPass(THREE.RGBShiftShader);
+        this.RGBShift.renderToScreen = false;
+
+        this.composer.addPass(this.RGBShift);
 
     	this.container.appendChild( this.renderer.domElement );
+
+        this.points.update();
+        this.renderer.render( this.scene, this.camera );
 
     	this.clock = Date.now();
 
     	this.addListeners();
 
-        this.addControls();
+        
 
-
-    }
-
-    onMouseMove( event ) {
-
-        this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;     
 
     }
 
     loadSound() {
 
         this.sound.load( "music/jedimind.mp3" );
-        this.emitter.on( "start", () => {
-            this.animate();
-        });
 
     }
 
-    addCurves() {
+    addPoints() {
 
-        this.curves = new Curves( this.scene, this.emitter );
-
-    }
-
-    addFloor() {
-
-        this.floor = new Floor( this.scene, this.emitter );
-
-    }
-
-    addSphere() {
-
-        this.sphere = new Sphere( this.scene, this.emitter );
-
-    }
-
-    addBroken() {
-
-        this.broken = new Broken( this.scene, this.emitter );
+        this.points = new Points( this.scene, this.emitter );
 
     }
 
@@ -142,100 +157,72 @@ class Scene {
 
     }
 
-    addRibbon() {
+    ready() {
 
-        this.ribbon = new Ribbon( this.scene, this.emitter );
-
-    }
-
-    addSun() {
-
-        this.sun = new Sun( this.scene, this.emitter );
-
-        this.ghettoblaster = new GhettoBlaster( this.scene, this.emitter );
+        console.log('ready');
+        document.getElementById("loadingBtn").style.opacity = 0;
+        document.getElementById("playBtn").addEventListener("click", () => {
+            this.play();
+        });
+        document.getElementById("playBtn").style.opacity = 1;
 
     }
 
-    addGround() {
+    play() {
 
-        this.ground = new Ground( this.scene, this.emitter );
-
+        console.log('play');
+        this.playBtn.style.opacity = 0;
+        this.playBtn.style.marginTop = "100%";
+        this.params.active = true;
+        this.emitter.emit( "start" );
+        this.points.start();
+        this.animate();
     }
 
-    addControls() {
-
-        this.controls = new OrbitControls( this.camera, this.renderer.domElement );
-
-    }
-
-    addLights() {
-
-        var ambient = new THREE.AmbientLight( 0xff0000 );
-        ambient.position.set(0, 0, -100);
-        this.scene.add( ambient );
-
-        var directionalLight = new THREE.DirectionalLight( 0xe2ffaa );
-        directionalLight.position.x = 0;
-        directionalLight.position.y = -1;
-        directionalLight.position.z = -145;
-        directionalLight.position.normalize();
-        this.scene.add( directionalLight );
+    replay() {
 
 
-        var light = new THREE.SpotLight( 0x999999, 2, 0 );
-        light.position.set( 0, 0, -145 );
-        light.target.position.set( 0, 0, 0 );
-        light.castShadow = true;
-        this.scene.add( light );
 
     }
 
     animate( ts ) {
 
         if (this.params.active) {
-        
+            
+            let sound = this.sound.getData();
+
             window.requestAnimationFrame( this.animate.bind(this) );
 
-            this.raycaster.setFromCamera( this.mouse, this.camera );   
+            this.points.update( sound );
 
-            var intersects = this.raycaster.intersectObjects( this.scene.children );
+            this.wave.update( sound );
 
-            for ( var i = 0; i < intersects.length; i++ ) {
-
-                // console.log( intersects[ i ] );
-            
-            }
-
-            this.curves.update( this.sound.getData() );
-
-            this.ribbon.update( this.sound.getData() );
-
-            // this.wave.update( this.sound.getData() );
-
-            // this.sphere.update( this.sound.getData() );
-
-            // this.ground.update( this.sound.getData() );
-
-            // this.broken.update( this.sound.getData() );
-
-            // this.sun.update( this.sound.getData() );
-
-            this.floor.update( this.sound.getData() );
-
-            this.render( ts );
+            this.render( ts, sound );
 
         }
 
     }
 
-    render() {
+    render( ts, soundData) {
 
-    	if (!this.params.active)
-        	this.params.active = true;
+        let time = soundData.time;
+        let timeArrayLength = time.length;
+        let average = 0;
 
-        // this.camera.lookAt( 0    , 0, 0 );
+        for(let i = 0; i < timeArrayLength; i++) {
+            average += time[ i ];
+        }
 
-        this.renderer.render( this.scene, this.camera );	
+        average /= timeArrayLength;
+
+        if ( Math.abs( average - 128 ) > 60 ) {
+
+            this.RGBShift.renderToScreen = true;
+            this.composer.render();
+
+        } else {
+            this.renderer.render( this.scene, this.camera );
+        }
 
     }
 
@@ -245,22 +232,8 @@ class Scene {
 
     	this.keyboard = new Keyboard( this.emitter );	
 
+        this.keyboard.addObject( this.points.getMesh() );
 
-        // let curves = this.curves.getMesh();
-
-        // for ( let i = 0; i < curves.length; i++ ) {
-
-        //     this.keyboard.addObject( curves[ i ].getMesh() );
-        // }
-
-        this.keyboard.addObject( this.ribbon.getMesh() );
-
-        // this.keyboard.addObject( this.floor.getMesh() );
-
-        // this.keyboard.addObject( this.sun.getMesh() );
-
-
-        // this.keyboard.addObject( this.camera );
     }
 
     onWindowResize() {

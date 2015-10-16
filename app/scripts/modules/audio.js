@@ -8,12 +8,11 @@ class Audio  {
         this.emitter = emitter;
         this.context = new AudioContext();
 
-        this.bufferSize = 1024; 
+        this.bufferSize = 512; 
 
         this.analyser = this.context.createAnalyser();
         this.analyser.fftSize = this.bufferSize;
         this.binCount = this.analyser.frequencyBinCount; // this.bufferSize / 2
-        console.log( this.binCount );
 
         this.dataFreqArray = new Uint8Array( this.binCount );
         this.dataTimeArray = new Uint8Array( this.binCount );
@@ -25,10 +24,18 @@ class Audio  {
     load( url ) {
 
         this.request = new XMLHttpRequest();
+
+        this.request.onreadystatechange = () => {
+            if (this.request.readyState == 4 && (this.request.status == 200 || this.request.status == 0)) {
+                this.emitter.emit( "ready" );
+            }
+        };
         this.request.open( "GET", url, true );
         this.request.responseType = "arraybuffer";
 
-        this.request.onload = this.binds.onLoad;
+        this.emitter.on( "start", () => {
+            this.onLoad();
+        });
         this.request.send();
     }
 
@@ -41,7 +48,6 @@ class Audio  {
             this.source.connect( this.context.destination );
             this.source.start( 0 );
 
-            this.emitter.emit( "start" );
         }, () => {
             console.log( "error" )
         } );
