@@ -1,3 +1,10 @@
+<<<<<<< HEAD
 node_modules/
 public/scripts/
 public/styles/
+=======
+.sass-cache
+node_modules/
+public/scripts
+public/styles
+>>>>>>> f47f3c9374f2a569f6d2b3c5a4bd2e543ded82cf
