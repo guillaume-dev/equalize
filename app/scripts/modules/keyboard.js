@@ -60,27 +60,27 @@ class Keyboard {
         		console.log( "position.x:", this.target.position.x);
         	break;
         	case 65: // A
-        		this.target.rotation.z -= 0.01;
+        		this.target.rotation.z -= 0.1;
         		console.log( "rotation.z:", this.target.rotation.z);
         	break; 
         	case 69: // E
-        		this.target.rotation.z += 0.01;
+        		this.target.rotation.z += 0.1;
         		console.log( "rotation.z:", this.target.rotation.z);
         	break;
         	case 90: // Z
-        		this.target.rotation.y -= 0.01;
+        		this.target.rotation.y -= 0.1;
         		console.log( "rotation.y:", this.target.rotation.y);
         	break; 
         	case 83: // S
-        		this.target.rotation.y += 0.01;
+        		this.target.rotation.y += 0.1;
         		console.log( "rotation.y:", this.target.rotation.y);
         	break;
         	case 81: // Q
-        		this.target.rotation.x -= 0.01;
+        		this.target.rotation.x -= 0.1;
         		console.log( "rotation.x:", this.target.rotation.x);
         	break; 
         	case 68: // D
-        		this.target.rotation.x += 0.01;
+        		this.target.rotation.x += 0.1;
         		console.log( "rotation.x:", this.target.rotation.x);
         	break;
         }

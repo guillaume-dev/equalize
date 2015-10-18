@@ -54,7 +54,7 @@ module.exports = {
     watchOptions: {
       debounceDelay: 1000
     },
-    server: { baseDir: './public' }
+    server: { baseDir: 'public' }
   },
 
   browserify: {
