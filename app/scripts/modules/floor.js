@@ -1,27 +1,15 @@
 let glslify = require('glslify');
 
-class Test {
+class Floor {
 
 
-  constructor( scene, emitter, options = {
-    position: {
-      x: 0,
-      y: -10.2,
-      z: 0
-    },
-    rotation: {
-      x: 1.4,
-      y: 0,
-      z: -0.7
-    },
-    shader: "floor"
-  }) {
+  constructor( scene, emitter, options = {}) {
 
-		this.scene = scene;
+        this.scene = scene;
 
-		this.emitter = emitter;
+        this.emitter = emitter;
 
-		this.particlesCount = 10000;
+        this.particlesCount = 10000;
 
         this.radius = 300;
         this.widthSegments = 25;
@@ -31,10 +19,6 @@ class Test {
         this.vertexShader = glslify('../../vertex-shaders/floor.vert');
 
         this.fragmentShader = glslify('../../fragment-shaders/floor.frag');
-
-   /*     this.vertexShader = glslify('../../vertex-shaders/floor.vert');
-
-        this.fragmentShader = glslify('../../fragment-shaders/floor.frag');*/
 
         let texture = THREE.ImageUtils.loadTexture( "images/map.png" );
         // let texture = THREE.ImageUtils.loadTexture( "images/map.jpg" );
@@ -59,19 +43,17 @@ class Test {
         });
 
         let geometry = new THREE.PlaneGeometry( this.radius, this.radius, this.widthSegments, this.heightSegments );
-        // let geometry = new THREE.PlaneGeometry( this.radius, this.radius, this.widthSegments, this.heightSegments );
-		    // this.geometry = new THREE.BufferGeometry().fromGeometry( geometry );
 
-		    this.geometry = geometry;
+        this.geometry = geometry;
 
         this.geometry.dynamic = true;
 
         this.mesh = new THREE.Mesh( this.geometry, this.material );
 
-        this.mesh.position.y = options.position.y;
+        this.mesh.position.y = -10.2;
 
-        this.mesh.rotation.x = options.rotation.x;
-        this.mesh.rotation.z = options.rotation.z;
+        this.mesh.rotation.x = 1.4;
+        this.mesh.rotation.z = -0.7;
 
         this.clock = Date.now();
 
@@ -110,28 +92,16 @@ class Test {
 
     }
 
-  	this.material.uniforms["time"].value = ( Date.now() - this.clock ) * 0.0008;
-
-  }
-
-  addGUI() {
-
-  	this.GUI = new dat.GUI();
-
-  	this.GUI.add( this, 'radius' );
-
-  	this.GUI.add( this, 'widthSegments' );
-
-  	this.GUI.add( this, 'heightSegments' );
+    this.material.uniforms["time"].value = ( Date.now() - this.clock ) * 0.0008;
 
   }
 
   getMesh() {
 
-  	return this.mesh;
+    return this.mesh;
 
   }
 
 }
 
-export { Test };
+export { Floor };

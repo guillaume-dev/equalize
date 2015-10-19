@@ -76,9 +76,9 @@ class Blob {
       let frequence = Math.abs( average - 128 );
 
       if ( frequence > 15 ) {
-        this.amplitude += 0.9;
+        this.amplitude += 0.09;
       } else {
-        this.amplitude -= 0.1;
+        this.amplitude -= 0.01;
       }
 
       if ( this.amplitude < 2 ) {
@@ -89,6 +89,7 @@ class Blob {
         this.amplitude = 8;
       }
 
+      console.log( this.amplitude );
       if ( this.amplitude > 2.5 ) {
         this.emitter.emit( "zoomOut" );
       } else if ( this.amplitude < 2.2 ) {

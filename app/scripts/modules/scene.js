@@ -4,6 +4,8 @@ import { Test } from './test';
 import { Blob } from './blob';
 import { Warp } from './warp';
 import { Ribbon } from './ribbon';
+import { Floor } from './floor';
+import { Roof } from './roof';
 
 let Controls = require('orbit-controls');
 
@@ -35,6 +37,7 @@ class Scene {
         this.zooming = false;
 
         this.blobs = [];
+        this.objects = [];
 
 	    this.clock = null;
 
@@ -44,26 +47,24 @@ class Scene {
 
         this.keyboard = new Keyboard( this.emitter );  
     	this.scene = new THREE.Scene();
-    	this.camera = new THREE.PerspectiveCamera( 45, this.params.width / this.params.height, 1, 1000 );
+    	this.camera = new THREE.PerspectiveCamera( 45, this.params.width / this.params.height, 1, 10000 );
 
         this.target = new THREE.Vector3();
         this.camera.lookAt(this.target);
 
-        this.camera.position.z = 35;
+        this.camera.position.z = 55;
 
-        this.keyboard.addObject( this.camera );
+        // this.keyboard.addObject( this.camera );
 
         this.sound = new Audio( this.emitter );
  
     	this.raycaster = new THREE.Raycaster();
 
-        this.test();
+        //this.test();
 
-        this.addRibbon();
+        this.addContext();
 
-        for (let i = 0; i < 1; i++) {
-            this.addBlob();
-        };
+        this.addBlob();
 
         this.loadSound();
 
@@ -71,7 +72,7 @@ class Scene {
 	        antialias: true
 	    });
 
-	    this.renderer.setClearColor(  0x000000, 1 );
+	    this.renderer.setClearColor( 0x111111, 1 );
     	this.renderer.setSize( this.params.width, this.params.height );
 
         this.container.appendChild( this.renderer.domElement );
@@ -86,14 +87,7 @@ class Scene {
 
         this.animate();
 
-        this.zooming = true;
-
-        TweenMax.to( this.controls, 2, {
-            distance: 40,
-            onComplete: () => {
-                this.zooming = false;
-            }
-        });
+        this.zoomIn();
 
     }
 
@@ -105,16 +99,38 @@ class Scene {
 
     addBlob() {
 
-        this.blobs.push( new Blob( this.scene, this.emitter ) );
+        //this.blobs.push( new Blob( this.scene, this.emitter ) );
 
-        this.keyboard.addObject( this.blobs[ 0 ].getMesh() );
+        this.blob = new Blob( this.scene, this.emitter );
 
+        this.objects.push( this.blob );
+
+        this.keyboard.addObject( this.blob.getMesh() );
+
+
+    }
+
+    addContext() {
+
+        this.floor = new Floor( this.scene, this.emitter);
+
+        this.roof = new Roof( this.scene, this.emitter);
+
+        this.objects.push( this.floor );
+
+        this.objects.push( this.roof );
+
+        this.keyboard.addObject( this.floor.getMesh() );
+
+        this.keyboard.addObject( this.roof.getMesh() );
 
     }
 
     addRibbon() {
 
         this.ribbon = new Ribbon( this.scene, this.emitter );
+
+        this.objects.push( this.ribbon );
 
         this.keyboard.addObject( this.ribbon.getMesh() );
 
@@ -123,6 +139,8 @@ class Scene {
     addWarp() {
 
         this.warp = new Warp( this.scene, this.emitter );
+
+        this.objects.push( this.warp );
 
         this.keyboard.addObject( this.warp.getMesh() );
 
@@ -142,21 +160,10 @@ class Scene {
         
             window.requestAnimationFrame( this.animate.bind(this) );
 
-            // this.raycaster.setFromCamera( this.mouse, this.camera );   
-
-            // var intersects = this.raycaster.intersectObjects( this.scene.children );
-
-            // for ( var i = 0; i < intersects.length; i++ ) {
-             
-            // }
-
-            for (let i = 0; i < this.blobs.length; i++) {
-                this.blobs[i].update( this.sound.getData() );
+            let objectsLength = this.objects.length;
+            for (let i = 0; i < objectsLength; i++) {
+                this.objects[ i ].update( this.sound.getData() );
             };
-
-            this.ribbon.update( this.sound.getData() );
-
-            this.test.update( this.sound.getData() );
 
             this.render( ts );
 
@@ -195,30 +202,32 @@ class Scene {
 
     zoomOut() {
 
-        if ( this.zooming || this.controls.distance == 45 ) return;
+        if ( this.zooming || this.camera.position.z == 55 ) return;
 
         this.zooming = true;
 
-        TweenMax.to( this.controls, 2, {
-            distance: 45,
+        TweenMax.to( this.camera.position, 2, {
+            z: 55,
             onComplete: () => {
                 this.zooming = false;
             }
         });
+
     }
 
     zoomIn() {
 
-        if ( this.zooming || this.controls.distance == 40 ) return;
+        if ( this.zooming || this.camera.position.z == 35 ) return;
 
         this.zooming = true;
 
-        TweenMax.to( this.controls, 2, {
-            distance: 40,
+        TweenMax.to( this.camera.position, 2, {
+            z: 35,
             onComplete: () => {
                 this.zooming = false;
             }
         });
+
     }
 
     onWindowResize() {
