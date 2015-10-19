@@ -16,7 +16,7 @@ void main() {
 
     vec3 v = vPosition;
     float easing = 0.8;
-    float dist = distance(vec2(vPosition.x, vPosition.y), vec2(0, 0));
+    float dist = distance( vec2(vPosition.x, vPosition.y), vec2( 25.0, -30.0 ) );
     float size = 2.0;
     float magnitude = 25.0;
 
@@ -24,11 +24,12 @@ void main() {
     vTangent = normalize( normalMatrix * position );
     vBinormal = normalize( cross( normal, vTangent ) );
 
-	//vPosition.y += (cnoise_1_4(vec4(vec3(vPosition), (time * easing)))); 
-    vPosition.z += (cnoise_1_4(vec4(vec3(vPosition), time * easing)));
-
-    ///vPosition.x *= cos( dist / size + ( time / 5000.0 ) ) * amplitude;
-    vPosition.z *= sin( dist / size + ( time / 5000.0 ) ) * amplitude;
+    if ( dist < 30.0 ) {
+        //vPosition.y += (cnoise_1_4(vec4(vec3(vPosition), (time * easing)))); 
+        vPosition.z += (cnoise_1_4(vec4(vec3(vPosition), time * easing)));
+        ///vPosition.x *= cos( dist / size + ( time / 5000.0 ) ) * amplitude;
+        vPosition.z *= sin( dist / size + ( time / 5000.0 ) ) * amplitude;
+    }
 
 	// deform mesh by the distance from the edge
 	gl_Position = projectionMatrix * modelViewMatrix * vec4(  vPosition, 1.0);

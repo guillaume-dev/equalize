@@ -14,7 +14,7 @@ class Floor {
         this.radius = 300;
         this.widthSegments = 25;
         this.heightSegments = 25;
-        this.amplitude = 1;
+        this.amplitude = 15;
         
         this.vertexShader = glslify('../../vertex-shaders/floor.vert');
 
@@ -39,7 +39,7 @@ class Floor {
             fragmentShader: this.fragmentShader,
             shading: THREE.SmoothShading,
             transparent: true,
-            wireframe: false
+            wireframe: true
         });
 
         let geometry = new THREE.PlaneGeometry( this.radius, this.radius, this.widthSegments, this.heightSegments );
@@ -77,12 +77,12 @@ class Floor {
       let frequence = Math.abs( average - 128 );
 
       if ( frequence > 15 ) {
-        this.amplitude += 0.09;
+        this.amplitude += 0.009;
       } else {
-        this.amplitude -= 0.01;
+        this.amplitude -= 0.001;
       }
 
-      if ( this.amplitude < 1 ) {
+      if ( this.amplitude < 2 ) {
         this.amplitude = 2;
       }
 

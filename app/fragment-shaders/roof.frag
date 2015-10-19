@@ -14,13 +14,11 @@ uniform vec2 resolution;
 uniform float amplitude;
 uniform float time;
 
-float hash( float n )
-{
+float hash( float n ) {
     return fract(sin(n)*43758.5453);
 }
 
-vec2 hash( vec2 p )
-{
+vec2 hash( vec2 p ) {
     p = vec2( dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)) );
     return fract(sin(p)*43758.5453);
 }
@@ -65,8 +63,6 @@ float box(vec2 p, vec2 b, float r)
   return length(max(abs(p)-b,0.0))-r;
 }
 
-
-
 vec3 blob(vec2 uv, vec3 color, vec2 speed, vec2 size, float time) {
     vec2 point = vec2(
         sin(speed.x * time) * size.x,
@@ -98,31 +94,32 @@ void main( void )
     diff += pulse * diffuseColor * 0.5 * ( 0.9 - cos(uv.x * 4.0) );
     diff -= rand(uv) * 0.04;
 
+    gl_FragColor = vec4(diff, 1.0);
     //////////////////////////
     //  Rim lighting shader //
     //////////////////////////
 
-/*     vec3 veye = normalize(-vPosition);       
+    //  vec3 veye = normalize(-vPosition);       
        
-    float vdn = 0.9 + dot(veye, vNormal);        // the rim contribution
+    // float vdn = 0.9 + dot(veye, vNormal);        // the rim contribution
 
-    if(vdn < 0.4) {
-        discard;
-    }
+    // if(vdn < 0.4) {
+    //     discard;
+    // }
 
-    float rim = smoothstep(0.5, 1.0, vdn);
+    // float rim = smoothstep(0.5, 1.0, vdn);
 
-    gl_FragColor = vec4(vec3(clamp(rim, 0.0, 1.0) * 1.0 * diffuseColor), 1.0);
- */
+    // gl_FragColor = vec4(vec3(clamp(rim, 0.0, 1.0) * 1.0 * diffuseColor), 1.0);
+
     vec3 veye = normalize(-vPosition);       
        
     float vdn = 1.2 + dot(veye, vNormal);        // the rim contribution
 
-    if( vdn < 0.2 ) {
-        discard;
-    }
+    // if( vdn < 0.2 ) {
+    //     discard;
+    // }
 
     float rim = smoothstep(-0.5, 1.0, vdn);
 
-    gl_FragColor = vec4(vec3(clamp(rim, 0.0, 1.0) * 1.0 * diffuseColor), 1.0);
+    // gl_FragColor = vec4(vec3(clamp(rim, 0.0, 1.0) * 1.0 * diffuseColor), 1.0);
 }

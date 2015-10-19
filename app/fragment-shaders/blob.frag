@@ -99,8 +99,6 @@ void main( void )
     diff -= rand(uv) * 0.04;
 
     // gl_FragColor = vec4(diff, opacity);
-
-
     
     //////////////////////////
     //  Rim lighting shader //

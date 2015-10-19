@@ -89,15 +89,11 @@ class Blob {
         this.amplitude = 8;
       }
 
-      console.log( this.amplitude );
       if ( this.amplitude > 2.5 ) {
         this.emitter.emit( "zoomOut" );
       } else if ( this.amplitude < 2.2 ) {
         this.emitter.emit( "zoomIn" );
       }
-
-      
-
     }
 
     this.material.uniforms["time"].value = ( Date.now() - this.clock ) * 0.0008;

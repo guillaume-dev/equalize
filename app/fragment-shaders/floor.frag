@@ -25,16 +25,6 @@ vec2 hash( vec2 p )
     return fract(sin(p)*43758.5453);
 }
 
-/** 
- * bump mapping aware phong shading 
- *
- * @param 'normal' { vec3 }     - fragment normal
- * @param 'light' { vec3 }      - light position
- * @param 'position' { vec3 }   - fragment position
- * @param 'diffuse' { vec3 }    - diffuse color
- * @param 'spec' { vec3 }       - specular color
- * @return { vec3 }             - phong color 
- */
 vec3 phong( in vec3 tanNormal, in vec3 normal, in vec3 light, in vec3 position, in vec3 diffuse, in vec3 spec)
 {
     vec3 lightDir = normalize(light - position);
@@ -98,31 +88,33 @@ void main( void )
     diff += pulse * diffuseColor * 0.5 * ( 0.9 - cos(uv.x * 4.0) );
     diff -= rand(uv) * 0.04;
 
+    gl_FragColor = vec4(diff, 1.0);
+
     //////////////////////////
     //  Rim lighting shader //
     //////////////////////////
 
-/*     vec3 veye = normalize(-vPosition);       
+    //  vec3 veye = normalize(-vPosition);       
        
-    float vdn = 0.9 + dot(veye, vNormal);        // the rim contribution
+    // float vdn = 0.9 + dot(veye, vNormal);        // the rim contribution
 
-    if(vdn < 0.4) {
-        discard;
-    }
+    // if(vdn < 0.4) {
+    //     discard;
+    // }
 
-    float rim = smoothstep(0.5, 1.0, vdn);
+    // float rim = smoothstep(0.5, 1.0, vdn);
 
-    gl_FragColor = vec4(vec3(clamp(rim, 0.0, 1.0) * 1.0 * diffuseColor), 1.0);
- */
+    // gl_FragColor = vec4(vec3(clamp(rim, 0.0, 1.0) * 1.0 * diffuseColor), 1.0);
+
     vec3 veye = normalize(-vPosition);       
        
     float vdn = 0.9 + dot(veye, vNormal);        // the rim contribution
 
-    if( vdn < 0.2 ) {
-        discard;
-    }
+    // if( vdn < 0.2 ) {
+    //     discard;
+    // }
 
-    float rim = smoothstep(-0.5, 1.5, vdn);
+    float rim = smoothstep(0.5, 1.0, vdn);
 
-    gl_FragColor = vec4(vec3(clamp(rim, 0.0, 1.0) * 1.0 * diffuseColor), 1.0);
+    // gl_FragColor = vec4(vec3(clamp(rim, 0.5, 1.5) * 1.0 * diffuseColor), 1.0);
 }

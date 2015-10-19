@@ -72,7 +72,7 @@ class Scene {
 	        antialias: true
 	    });
 
-	    this.renderer.setClearColor( 0x111111, 1 );
+	    this.renderer.setClearColor( 0x000000, 1 );
     	this.renderer.setSize( this.params.width, this.params.height );
 
         this.container.appendChild( this.renderer.domElement );
@@ -208,6 +208,7 @@ class Scene {
 
         TweenMax.to( this.camera.position, 2, {
             z: 55,
+            y: 5,
             onComplete: () => {
                 this.zooming = false;
             }
@@ -223,6 +224,7 @@ class Scene {
 
         TweenMax.to( this.camera.position, 2, {
             z: 35,
+            y: 0,
             onComplete: () => {
                 this.zooming = false;
             }
