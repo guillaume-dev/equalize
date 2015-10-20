@@ -26,13 +26,13 @@ void main() {
 
     if ( dist < 30.0 ) {
         //vPosition.y += (cnoise_1_4(vec4(vec3(vPosition), (time * easing)))); 
-        vPosition.z += (cnoise_1_4(vec4(vec3(vPosition), time * easing)));
+        //vPosition.z += (cnoise_1_4(vec4(vec3(vPosition), time * easing)));
         ///vPosition.x *= cos( dist / size + ( time / 5000.0 ) ) * amplitude;
-        vPosition.z *= sin( dist / size + ( time / 5000.0 ) ) * amplitude;
+        //vPosition.z *= sin( dist / size + ( time / 5000.0 ) ) * amplitude;
     }
 
 	// deform mesh by the distance from the edge
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(  vPosition, 1.0);
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0);
 
 	float d = 3.3 * sin( time * 3. + vPosition.y * 5.);									
 

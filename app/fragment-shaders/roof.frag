@@ -9,10 +9,10 @@ const vec3 lightPos = vec3(0.0, 150.0, 0.0);
 const vec3 diffuseColor = vec3( 0.0, 0.3, 0.6);
 const vec3 specColor = vec3(0.2);
 
-uniform vec2 mouse;
 uniform vec2 resolution;
 uniform float amplitude;
 uniform float time;
+uniform sampler2D texture;
 
 float hash( float n ) {
     return fract(sin(n)*43758.5453);

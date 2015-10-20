@@ -5,11 +5,11 @@ class Warp {
 
   constructor( scene, emitter, options = {} ) {
 
-		this.scene = scene;
+    this.scene = scene;
 
-		this.emitter = emitter;
+    this.emitter = emitter;
 
-		this.particlesCount = 10000;
+    this.particlesCount = 10000;
 
         this.radius = 150;
         this.widthSegments = 50;
@@ -45,17 +45,17 @@ class Warp {
 
         let geometry = new THREE.PlaneGeometry( this.radius, this.radius, this.widthSegments, this.heightSegments );
         // let geometry = new THREE.PlaneGeometry( this.radius, this.radius, this.widthSegments, this.heightSegments );
-		    // this.geometry = new THREE.BufferGeometry().fromGeometry( geometry );
+        // this.geometry = new THREE.BufferGeometry().fromGeometry( geometry );
 
-		    this.geometry = geometry;
+        this.geometry = geometry;
 
         this.mesh = new THREE.Mesh( this.geometry, this.material );
 
         this.mesh.position.y = -56;
-        this.mesh.position.z = 22.4;
+        this.mesh.position.z = -50;
 
         // this.mesh.rotation.x = -0.1; // lying down
-        this.mesh.rotation.x = 1.6; // background
+        this.mesh.rotation.x = 3.0; // background
 
         this.clock = Date.now();
 
@@ -79,7 +79,7 @@ class Warp {
       let frequence = Math.abs( average - 128 );
 
       if ( frequence > 15 ) {
-        this.amplitude += 0.09;
+        this.amplitude += 0.1;
       } else {
         this.amplitude -= 0.01;
       }
@@ -95,13 +95,13 @@ class Warp {
     }
 
     this.mesh.material.uniforms[ 'amplitude' ].value = this.amplitude;
-  	this.material.uniforms["time"].value = ( Date.now() - this.clock ) * 0.0008;
+    this.material.uniforms["time"].value = ( Date.now() - this.clock ) * 0.0008;
 
   }
 
   getMesh() {
 
-  	return this.mesh;
+    return this.mesh;
 
   }
 
