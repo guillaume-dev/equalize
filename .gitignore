@@ -1,5 +1,5 @@
 .sass-cache
 node_modules/
-public/scripts/
-!public/scripts/vendors/
-public/styles/
+public/scripts/*
+!public/scripts/vendors
+public/styles
