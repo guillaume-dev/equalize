@@ -108,11 +108,11 @@ void main( void )
        
     float vdn = 0.9 + dot(veye, vNormal);        // the rim contribution
 
-    if(vdn < 0.4) {
+    if(vdn < 0.8) {
         discard;
     }
 
-    float rim = smoothstep(0.5, 1.0, vdn);
+    float rim = smoothstep(0.0, 1.0, vdn);
 
     gl_FragColor = vec4(vec3(clamp(rim, 0.0, 1.0) * 1.0 * diffuseColor), 1.0);
 }

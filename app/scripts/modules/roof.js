@@ -18,14 +18,11 @@ class Roof {
         
         this.vertexShader = glslify('../../vertex-shaders/floor.vert');
 
-        this.fragmentShader = glslify('../../fragment-shaders/roof.frag');
+        this.fragmentShader = glslify('../../fragment-shaders/floor.frag');
 
-        let texture = THREE.ImageUtils.loadTexture( "images/map.png" );
+        let texture = THREE.TextureLoader( "images/map.png" );
         // let texture = THREE.ImageUtils.loadTexture( "images/map.jpg" );
 
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set( 4, 4 );
 
         this.material = new THREE.ShaderMaterial({
             uniforms: { 

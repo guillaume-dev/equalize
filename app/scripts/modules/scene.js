@@ -6,6 +6,7 @@ import { Warp } from './warp';
 import { Ribbon } from './ribbon';
 import { Floor } from './floor';
 import { Roof } from './roof';
+import { Rock } from './rock';
 
 let Controls = require('orbit-controls');
 
@@ -62,7 +63,9 @@ class Scene {
 
         //this.test();
 
-        this.addContext();
+        this.addRock();
+
+        this.addRibbon();
 
         this.addBlob();
 
@@ -72,7 +75,7 @@ class Scene {
 	        antialias: true
 	    });
 
-	    this.renderer.setClearColor( 0x000000, 1 );
+	    this.renderer.setClearColor( 0xffffff, 1 );
     	this.renderer.setSize( this.params.width, this.params.height );
 
         this.container.appendChild( this.renderer.domElement );
@@ -115,13 +118,23 @@ class Scene {
 
     loadSound() {
 
-        this.sound.load( "music/jedimind.mp3" );
+        // this.sound.load( "music/jedimind.mp3" );
+        this.sound.load( "music/passenger_circles.mp3" );
+
+    }
+
+    addRock() {
+
+        this.rock = new Rock( this.scene, this.emitter );
+
+        this.objects.push( this.rock );
+
+        this.keyboard.addObject( this.rock.getMesh() );
+
 
     }
 
     addBlob() {
-
-        //this.blobs.push( new Blob( this.scene, this.emitter ) );
 
         this.blob = new Blob( this.scene, this.emitter );
 
@@ -230,7 +243,7 @@ class Scene {
 
         TweenMax.to( this.camera.position, 2, {
             z: 55,
-            y: 5,
+            // y: 5,
             onComplete: () => {
                 this.zooming = false;
             }
@@ -246,7 +259,7 @@ class Scene {
 
         TweenMax.to( this.camera.position, 2, {
             z: 35,
-            y: 0,
+            // y: 0,
             onComplete: () => {
                 this.zooming = false;
             }

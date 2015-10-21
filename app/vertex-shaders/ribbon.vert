@@ -1,23 +1,18 @@
+attribute vec3 velocity;
 
 uniform float time;
-varying vec3 vNormal;
-uniform float zoom;
-varying float vari;
-varying float timevariance;
+uniform vec3 endpoint;
+
+varying vec3 vPosition;
 
 void main() {
 
-    timevariance = 1000.0;
-    vari = 2000.0;
-    float normalRatioRange = 10.0;
+	vPosition = position;
+	
+	vPosition.x += velocity.x * time ;
+	vPosition.y += velocity.y * time ;
+	vPosition.z += velocity.z * time ;
 
-    float id;               
+    gl_Position = projectionMatrix * modelViewMatrix *  vec4( vPosition, 1.0 );
 
-    vNormal = normal;
-
-    vec3 newpos = vec3(position.x, position.y , position.z  );   
-
-    gl_Position = projectionMatrix * modelViewMatrix *  vec4( normal * normalRatioRange  + newpos, 1.0);
-
-    // gl_Position = projectionMatrix * modelViewMatrix *  vec4( position, 1.0 );      
 }

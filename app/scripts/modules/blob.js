@@ -16,7 +16,7 @@ class Blob {
         this.radius = 1;
         this.widthSegments = 175;
         this.heightSegments = 175;
-        this.amplitude = 2;
+        this.amplitude = 8;
 
         this.vertexShader = glslify('../../vertex-shaders/blob.vert');
 
@@ -48,8 +48,11 @@ class Blob {
 
         this.mesh = new THREE.Mesh( this.geometry, this.material );
 
-        this.mesh.rotation.x = 6;
-        this.mesh.rotation.y = -5.8;
+        // this.mesh.rotation.x = 6;
+        // this.mesh.rotation.y = -5.8;
+        // this.mesh.rotation.z = 1.3;
+        this.mesh.rotation.x = 9;
+        this.mesh.rotation.y = -9;
         this.mesh.rotation.z = 1.3;
 
         this.clock = Date.now();
@@ -75,25 +78,25 @@ class Blob {
 
       let frequence = Math.abs( average - 128 );
 
-      if ( frequence > 15 ) {
-        this.amplitude += 0.09;
+      if ( frequence < 8 ) {
+        this.amplitude += 0.1;
       } else {
         this.amplitude -= 0.01;
       }
 
-      if ( this.amplitude < 2 ) {
-        this.amplitude = 2;
+      if ( this.amplitude < 3 ) {
+        this.amplitude = 3;
       }
 
       if ( this.amplitude > 8 ) {
         this.amplitude = 8;
       }
 
-      if ( this.amplitude > 2.5 ) {
-        this.emitter.emit( "zoomOut" );
-      } else if ( this.amplitude < 2.2 ) {
-        this.emitter.emit( "zoomIn" );
-      }
+      // if ( this.amplitude > 3 ) {
+      //   this.emitter.emit( "zoomOut" );
+      // } else if ( this.amplitude < 2.2 ) {
+      //   this.emitter.emit( "zoomIn" );
+      // }
     }
 
     this.material.uniforms["time"].value = ( Date.now() - this.clock ) * 0.0008;

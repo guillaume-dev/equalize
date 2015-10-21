@@ -14,13 +14,13 @@ class Floor {
         this.radius = 300;
         this.widthSegments = 25;
         this.heightSegments = 25;
-        this.amplitude = 15;
+        this.amplitude = 200;
         
         this.vertexShader = glslify('../../vertex-shaders/floor.vert');
 
         this.fragmentShader = glslify('../../fragment-shaders/floor.frag');
 
-        let texture = THREE.ImageUtils.loadTexture( "images/map.png" );
+        let texture = THREE.ImageUtils.loadTexture( "images/eye.png" );
         // let texture = THREE.ImageUtils.loadTexture( "images/map.jpg" );
 
         texture.wrapS = THREE.RepeatWrapping;
@@ -39,7 +39,7 @@ class Floor {
             fragmentShader: this.fragmentShader,
             shading: THREE.SmoothShading,
             transparent: true,
-            wireframe: true
+            // wireframe: true
         });
 
         let geometry = new THREE.PlaneGeometry( this.radius, this.radius, this.widthSegments, this.heightSegments );
@@ -53,7 +53,7 @@ class Floor {
         this.mesh.position.y = -10.2;
 
         this.mesh.rotation.x = 1.4;
-        this.mesh.rotation.z = -0.7;
+        this.mesh.rotation.z = -1.2;
 
         this.clock = Date.now();
 

@@ -33,11 +33,11 @@ void main() {
 	vTangent = normalize( normalMatrix * position );
 	vBinormal = normalize( cross( normal, vTangent ) );
 
-	vPosition.y += (cnoise_1_4(vec4(vec3(vPosition), (time * easing)))); 
-    vPosition.z += (cnoise_1_4(vec4(vec3(vPosition), time * easing)));
+	vPosition.y += (cnoise_1_4(vec4(vec3(vPosition), (time * easing + amplitude)))); 
+    vPosition.z += (cnoise_1_4(vec4(vec3(vPosition), time * easing + amplitude)));
 
-    vPosition.x *= cos( dist / size + ( time / 5000.0 ) ) * amplitude;
-    vPosition.y *= sin( dist / size + ( time / 5000.0 ) ) * amplitude;
+    // vPosition.x *= cos( dist / size + ( time / 5000.0 ) ) * amplitude;
+    // vPosition.y *= sin( dist / size + ( time / 5000.0 ) ) * amplitude;
 
 	// deform mesh by the distance from the edge
 	gl_Position = projectionMatrix * modelViewMatrix * vec4( edges * normal + vPosition, 1.0);

@@ -10,7 +10,8 @@ const vec3 lightPos = vec3(150.0);
 // green
 // const vec3 diffuseColor = vec3( 112.0 / 255.0, 220.0  / 255.0, 194.0 / 255.0);
 // blue
-const vec3 diffuseColor = vec3( 0.0, 0.3, 0.6);
+// const vec3 diffuseColor = vec3( 0.0, 0.3, 0.6);
+const vec3 diffuseColor = vec3( 0.0, 0.0, 0.0);
 const vec3 specColor = vec3(0.2);
 
 uniform vec2 mouse;
