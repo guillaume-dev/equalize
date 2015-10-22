@@ -13,7 +13,6 @@ class Audio  {
         this.analyser = this.context.createAnalyser();
         this.analyser.fftSize = this.bufferSize;
         this.binCount = this.analyser.frequencyBinCount; // this.bufferSize / 2
-        console.log( this.binCount );
 
         this.dataFreqArray = new Uint8Array( this.binCount );
         this.dataTimeArray = new Uint8Array( this.binCount );
@@ -39,12 +38,21 @@ class Audio  {
             this.source.connect( this.analyser );
             this.source.buffer = buffer;
             this.source.connect( this.context.destination );
-            this.source.start( 0 );
 
-            this.emitter.emit( "start" );
+            this.source.onended = () => {
+                this.emitter.emit( "ended" );
+                console.log("ended");
+            };
+
+            this.emitter.emit( "loaded" );
+            console.log('loaded');
         }, () => {
             console.log( "error" )
         } );
+    }
+
+    start() {
+        this.source.start( 0 );
     }
 
     getData() {

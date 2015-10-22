@@ -1,7 +1,4 @@
-import { Utils } from './utils';
-
 let glslify = require('glslify');
-let utils = new Utils();
 
 class Blob {
 
@@ -16,44 +13,33 @@ class Blob {
         this.radius = 1;
         this.widthSegments = 175;
         this.heightSegments = 175;
-        this.amplitude = 8;
+        this.amplitudeFloor = 8;
+        this.amplitudeRoof = 8;
 
         this.vertexShader = glslify('../../vertex-shaders/blob.vert');
 
         this.fragmentShader = glslify('../../fragment-shaders/blob.frag');
 
-        // let texture = THREE.ImageUtils.loadTexture( "images/noisebw.png" );
-        // texture.wrapS = THREE.RepeatWrapping;
-        // texture.wrapT = THREE.RepeatWrapping;
-        // texture.repeat.set( 4, 4 );
-
         this.material = new THREE.ShaderMaterial({
             uniforms: { 
                 "time": { type: "f", value: 0 },
-                "amplitude": { type: "f", value: this.amplitude },
-                "resolution": { type: "v2", value: new THREE.Vector2( window.innerWidth, window.innerHeight ) },
-                // texture: { type: "t", value: texture }
+                "amplitudeFloor": { type: "f", value: this.amplitudeFloor },
+                "amplitudeRoof": { type: "f", value: this.amplitudeRoof }
             }, 
             side: THREE.DoubleSide,
             vertexShader: this.vertexShader,
             fragmentShader: this.fragmentShader,
-            shading: THREE.SmoothShading,
             transparent: true
         });
 
 
         let geometry = new THREE.SphereGeometry( this.radius, this.widthSegments, this.heightSegments );
-        // let geometry = new THREE.CircleGeometry( this.radius, this.widthSegments );
 		    this.geometry = geometry;
 
         this.mesh = new THREE.Mesh( this.geometry, this.material );
 
-        // this.mesh.rotation.x = 6;
-        // this.mesh.rotation.y = -5.8;
-        // this.mesh.rotation.z = 1.3;
-        this.mesh.rotation.x = 9;
-        this.mesh.rotation.y = -9;
-        this.mesh.rotation.z = 1.3;
+        this.mesh.position.y = -2.4;
+        this.mesh.rotation.x = 6.4;
 
         this.clock = Date.now();
 
@@ -76,39 +62,41 @@ class Blob {
 
       average /= 512;
 
-      let frequence = Math.abs( average - 128 );
+      let frequence = Math.abs( average - 128 ) * 10;
 
-      if ( frequence < 8 ) {
-        this.amplitude += 0.1;
+      if ( frequence > 15 ) {
+        this.amplitudeFloor += 0.1;
       } else {
-        this.amplitude -= 0.01;
+        this.amplitudeFloor -= 0.09;
       }
 
-      if ( this.amplitude < 3 ) {
-        this.amplitude = 3;
+      if ( this.amplitudeFloor < 0 ) {
+        this.amplitudeFloor = 0;
       }
 
-      if ( this.amplitude > 8 ) {
-        this.amplitude = 8;
+      if ( this.amplitudeFloor > 8 ) {
+        this.amplitudeFloor = 8;
       }
 
-      // if ( this.amplitude > 3 ) {
-      //   this.emitter.emit( "zoomOut" );
-      // } else if ( this.amplitude < 2.2 ) {
-      //   this.emitter.emit( "zoomIn" );
-      // }
+      if ( frequence < 15 ) {
+        this.amplitudeRoof += 0.3;
+      } else {
+        this.amplitudeRoof -= 0.09;
+      }
+
+      if ( this.amplitudeRoof < 0 ) {
+        this.amplitudeRoof = 0;
+      }
+
+      if ( this.amplitudeRoof > 8 ) {
+        this.amplitudeRoof = 8;
+      }
+
     }
 
     this.material.uniforms["time"].value = ( Date.now() - this.clock ) * 0.0008;
-    this.mesh.material.uniforms[ 'amplitude' ].value = this.amplitude;
-
-  }
-
-  setPosition(x, y, z) {
-
-    this.mesh.position.x = x;
-    this.mesh.position.y = y;
-    this.mesh.position.z = z;
+    this.mesh.material.uniforms[ 'amplitudeFloor' ].value = this.amplitudeFloor;
+    this.mesh.material.uniforms[ 'amplitudeRoof' ].value = this.amplitudeRoof;
 
   }
 

@@ -11,28 +11,19 @@ class Floor {
 
         this.particlesCount = 10000;
 
-        this.radius = 300;
-        this.widthSegments = 25;
-        this.heightSegments = 25;
-        this.amplitude = 200;
+        this.size = 150;
+        this.widthSegments = 350;
+        this.heightSegments = 350;
+        this.amplitude = 3;
         
         this.vertexShader = glslify('../../vertex-shaders/floor.vert');
 
         this.fragmentShader = glslify('../../fragment-shaders/floor.frag');
 
-        let texture = THREE.ImageUtils.loadTexture( "images/eye.png" );
-        // let texture = THREE.ImageUtils.loadTexture( "images/map.jpg" );
-
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set( 4, 4 );
-
         this.material = new THREE.ShaderMaterial({
             uniforms: { 
                 "time": { type: "f", value: 0 },
-                "amplitude": { type: "f", value: this.amplitude },
-                "resolution": { type: "v2", value: new THREE.Vector2( window.innerWidth, window.innerHeight ) },
-                "texture": { type: "t", value: texture },
+                "amplitude": { type: "f", value: this.amplitude }
             },
             side: THREE.DoubleSide,
             vertexShader: this.vertexShader,
@@ -42,11 +33,7 @@ class Floor {
             // wireframe: true
         });
 
-        let geometry = new THREE.PlaneGeometry( this.radius, this.radius, this.widthSegments, this.heightSegments );
-
-        this.geometry = geometry;
-
-        this.geometry.dynamic = true;
+        this.geometry = new THREE.PlaneGeometry( this.size, this.size, this.widthSegments, this.heightSegments );
 
         this.mesh = new THREE.Mesh( this.geometry, this.material );
 
@@ -74,24 +61,24 @@ class Floor {
 
       average /= 512;
 
-      let frequence = Math.abs( average - 128 );
+      let frequence = Math.abs( average - 128 ) * 10;
 
       if ( frequence > 15 ) {
-        this.amplitude += 0.009;
+        this.amplitude += 0.1;
       } else {
-        this.amplitude -= 0.001;
+        this.amplitude -= 0.09;
       }
 
-      if ( this.amplitude < 2 ) {
-        this.amplitude = 2;
+      if ( this.amplitude < 0 ) {
+        this.amplitude = 0;
       }
 
-      if ( this.amplitude > 20 ) {
-        this.amplitude = 20;
+      if ( this.amplitude > 8 ) {
+        this.amplitude = 8;
       }
-
     }
 
+    this.material.uniforms["amplitude"].value = this.amplitude;
     this.material.uniforms["time"].value = ( Date.now() - this.clock ) * 0.0008;
 
   }

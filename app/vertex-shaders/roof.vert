@@ -15,8 +15,7 @@ void main() {
     vUv = uv;
     vPosition = position;
     vNormal = normalize( normalMatrix * normal );
-    vTangent = normalize( normalMatrix * position );
-    vBinormal = normalize( cross( normal, vTangent ) );
+
     float noise = 2.0;
     float easing = 0.08;
     float dist = distance( vec2(vPosition.x, vPosition.y), vec2( 0.0, 0.0 ) );
@@ -35,8 +34,8 @@ void main() {
       
       displacement += pnoise_1_5( 8. * position + vec3( 0, easing * time * 20., 0 ), vec3( 100. ) ) * .1 * noise - elevation;// * 0.008 ));//( amplitude - ( dist / 30.0 ) );
 
-      displacement = displacement + (cos(position.x / 2. - 3.14 / 2.)) * amplitudeRatio;
-      displacement = displacement + (sin(position.y / 2. - 3.14 / 2.)) * amplitudeRatio;
+      displacement = displacement + (sin(position.x / 2. - 3.14 / 2.)) * amplitudeRatio;
+      displacement = displacement + (cos(position.y / 2. - 3.14 / 2.)) * amplitudeRatio;
 
       newPosition = vec3(position.x, position.y, displacement + z);
 

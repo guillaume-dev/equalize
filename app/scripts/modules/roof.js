@@ -2,34 +2,24 @@ let glslify = require('glslify');
 
 class Roof {
 
-
   constructor( scene, emitter, options = {}) {
 
         this.scene = scene;
-
         this.emitter = emitter;
-
-        this.particlesCount = 10000;
-
-        this.radius = 300;
-        this.widthSegments = 25;
-        this.heightSegments = 25;
+        this.size = 150;
+        this.widthSegments = 350;
+        this.heightSegments = 350;
         this.amplitude = 3;
         
-        this.vertexShader = glslify('../../vertex-shaders/floor.vert');
+        this.vertexShader = glslify('../../vertex-shaders/roof.vert');
 
-        this.fragmentShader = glslify('../../fragment-shaders/floor.frag');
-
-        let texture = THREE.TextureLoader( "images/map.png" );
-        // let texture = THREE.ImageUtils.loadTexture( "images/map.jpg" );
-
+        this.fragmentShader = glslify('../../fragment-shaders/roof.frag');
 
         this.material = new THREE.ShaderMaterial({
             uniforms: { 
                 "time": { type: "f", value: 0 },
                 "amplitude": { type: "f", value: this.amplitude },
                 "resolution": { type: "v2", value: new THREE.Vector2( window.innerWidth, window.innerHeight ) },
-                "texture": { type: "t", value: texture },
             },
             side: THREE.DoubleSide,
             vertexShader: this.vertexShader,
@@ -39,20 +29,14 @@ class Roof {
             wireframe: false
         });
 
-        let geometry = new THREE.PlaneGeometry( this.radius, this.radius, this.widthSegments, this.heightSegments );
-
-        this.geometry = geometry;
-
-        this.geometry.dynamic = true;
+        this.geometry = new THREE.PlaneGeometry( this.size, this.size, this.widthSegments, this.heightSegments );
 
         this.mesh = new THREE.Mesh( this.geometry, this.material );
 
-        this.mesh.position.y = 37.5;
-        this.mesh.position.z = -28;
-
+        this.mesh.position.y = 5;
+        
         this.mesh.rotation.x = 1.4;
-        this.mesh.rotation.z = -0.7;
-
+        this.mesh.rotation.z = -1.2;
 
         this.clock = Date.now();
 
@@ -73,24 +57,24 @@ class Roof {
 
       average /= 512;
 
-      let frequence = Math.abs( average - 128 );
+      let frequence = Math.abs( average - 128 ) * 10;
 
-      if ( frequence > 15 ) {
-        this.amplitude += 0.09;
+      if ( frequence < 15 ) {
+        this.amplitude += 0.3;
       } else {
-        this.amplitude -= 0.01;
+        this.amplitude -= 0.09;
       }
 
-      if ( this.amplitude < 1 ) {
-        this.amplitude = 2;
+      if ( this.amplitude < 0 ) {
+        this.amplitude = 0;
       }
 
-      if ( this.amplitude > 20 ) {
-        this.amplitude = 20;
+      if ( this.amplitude > 8 ) {
+        this.amplitude = 8;
       }
-
     }
 
+    this.material.uniforms["amplitude"].value = this.amplitude;
     this.material.uniforms["time"].value = ( Date.now() - this.clock ) * 0.0008;
 
   }

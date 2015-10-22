@@ -1,12 +1,8 @@
 import { Keyboard } from './keyboard';
 import { Audio } from './audio';
-import { Test } from './test';
 import { Blob } from './blob';
-import { Warp } from './warp';
-import { Ribbon } from './ribbon';
 import { Floor } from './floor';
 import { Roof } from './roof';
-import { Rock } from './rock';
 
 let Controls = require('orbit-controls');
 
@@ -25,7 +21,7 @@ class Scene {
         this.keyboard = null;
 
     	this.params = {
-    		active: options.active || true,
+    		active: options.active || false,
 	        height: options.height || window.innerHeight,
 	        width: options.width || window.innerWidth
     	};
@@ -46,26 +42,25 @@ class Scene {
 
     init() {
 
-        this.keyboard = new Keyboard( this.emitter );  
-    	this.scene = new THREE.Scene();
-    	this.camera = new THREE.PerspectiveCamera( 45, this.params.width / this.params.height, 1, 10000 );
+        this.addListeners();
+
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera( 45, this.params.width / this.params.height, 1, 10000 );
 
         this.target = new THREE.Vector3();
         this.camera.lookAt(this.target);
 
-        this.camera.position.z = 55;
+        this.camera.position.x = -8.5;
+        this.camera.position.y = -18.4;
+        this.camera.position.z = -66;
 
-        // this.keyboard.addObject( this.camera );
+        this.camera.rotation.x = 2.8;
+        this.camera.rotation.y = -0.35;
+        this.camera.rotation.z = 3.04;
 
         this.sound = new Audio( this.emitter );
- 
-    	this.raycaster = new THREE.Raycaster();
 
-        //this.test();
-
-        this.addRock();
-
-        this.addRibbon();
+        this.addContext();
 
         this.addBlob();
 
@@ -81,56 +76,25 @@ class Scene {
         this.container.appendChild( this.renderer.domElement );
 
         this.controls = new Controls({
-            distance: 200,
+            distance: 80
         });
+
+        const position = [ -1.6, -19.33, -67.25 ];
+        const direction = [0.023, 0.27, 0.96];
+        this.camera.position.fromArray(position);
+        this.camera.lookAt(this.target.fromArray(direction));
+        this.controls.update(position, direction);
 
     	this.clock = Date.now();
 
-    	this.addListeners();
-
         this.animate();
 
-        this.zoomIn();
-
-        this.debugaxis(100);
 
     }
-
-    debugaxis(axisLength) {
-        //Shorten the vertex function
-        function v(x,y,z){ 
-                return new THREE.Vector3(x,y,z); 
-        }
-
-        this.createAxis(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000);
-        this.createAxis(v(0, -axisLength, 0), v(0, axisLength, 0), 0x00FF00);
-        this.createAxis(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF);
-    }
-
-    createAxis(p1, p2, color){
-        var line, lineGeometry = new THREE.Geometry(),
-        lineMat = new THREE.LineBasicMaterial({color: color, lineWidth: 1});
-        lineGeometry.vertices.push(p1, p2);
-        line = new THREE.Line(lineGeometry, lineMat);
-        this.scene.add(line);
-    }
-        
 
     loadSound() {
 
-        // this.sound.load( "music/jedimind.mp3" );
         this.sound.load( "music/passenger_circles.mp3" );
-
-    }
-
-    addRock() {
-
-        this.rock = new Rock( this.scene, this.emitter );
-
-        this.objects.push( this.rock );
-
-        this.keyboard.addObject( this.rock.getMesh() );
-
 
     }
 
@@ -139,8 +103,6 @@ class Scene {
         this.blob = new Blob( this.scene, this.emitter );
 
         this.objects.push( this.blob );
-
-        this.keyboard.addObject( this.blob.getMesh() );
 
 
     }
@@ -154,69 +116,34 @@ class Scene {
         this.objects.push( this.floor );
 
         this.objects.push( this.roof );
-
-        this.keyboard.addObject( this.floor.getMesh() );
-
-        this.keyboard.addObject( this.roof.getMesh() );
-
-    }
-
-    addRibbon() {
-
-        this.ribbon = new Ribbon( this.scene, this.emitter );
-
-        this.objects.push( this.ribbon );
-
-        this.keyboard.addObject( this.ribbon.getMesh() );
-
-    }
-
-    addWarp() {
-
-        this.warp = new Warp( this.scene, this.emitter );
-
-        this.objects.push( this.warp );
-
-        this.keyboard.addObject( this.warp.getMesh() );
-
-    }
-
-    test() {
-
-        this.test = new Test( this.scene, this.emitter );
-
-        this.keyboard.addObject( this.test.getMesh() );
-
     }
 
     animate( ts ) {
 
-        if (this.params.active) {
         
-            window.requestAnimationFrame( this.animate.bind(this) );
+        window.requestAnimationFrame( this.animate.bind(this) );
+
+        if (this.params.active) {
 
             let objectsLength = this.objects.length;
             for (let i = 0; i < objectsLength; i++) {
                 this.objects[ i ].update( this.sound.getData() );
             };
 
-            this.render( ts );
-
+        } else {
+            this.blob.update();
         }
 
+        this.render( ts );
     }
 
     render() {
 
-    	if (!this.params.active)
-        	this.params.active = true;
-
-        // const position = this.camera.position.toArray();
-        // const direction = this.target.toArray();
-        // console.log(position, this.target.fromArray(direction) )
-        // this.controls.update(position, direction);
-        // this.camera.position.fromArray(position);
-        // this.camera.lookAt(this.target.fromArray(direction));
+        const position = this.camera.position.toArray();
+        const direction = this.target.toArray();
+        this.controls.update(position, direction);
+        this.camera.position.fromArray(position);
+        this.camera.lookAt(this.target.fromArray(direction));
 
         this.renderer.render( this.scene, this.camera );    
     }
@@ -233,17 +160,36 @@ class Scene {
             this.zoomIn();
         });
 
+        this.emitter.on( "loaded", () => {
+            let play = document.getElementById("play");
+            play.innerHTML = "Play";
+            play.style.opacity = 1;
+        });
+
+        document.getElementById("play").addEventListener("click", () => {
+
+            this.play();
+
+        });
+
+    }
+
+    play() {
+
+        this.params.active = true;
+        this.sound.start();
+        this.zoomIn();
+
     }
 
     zoomOut() {
 
-        if ( this.zooming || this.camera.position.z == 55 ) return;
+        if ( this.zooming || this.controls.distance == 80 ) return;
 
         this.zooming = true;
 
-        TweenMax.to( this.camera.position, 2, {
-            z: 55,
-            // y: 5,
+        TweenMax.to( this.controls, 2, {
+            distance: 80,
             onComplete: () => {
                 this.zooming = false;
             }
@@ -253,13 +199,12 @@ class Scene {
 
     zoomIn() {
 
-        if ( this.zooming || this.camera.position.z == 35 ) return;
+        if ( this.zooming || this.controls.distance == 70 ) return;
 
         this.zooming = true;
 
-        TweenMax.to( this.camera.position, 2, {
-            z: 35,
-            // y: 0,
+        TweenMax.to( this.controls, 2, {
+            distance: 70,
             onComplete: () => {
                 this.zooming = false;
             }
