@@ -70,7 +70,7 @@ class Scene {
 	        antialias: true
 	    });
 
-	    this.renderer.setClearColor( 0xffffff, 1 );
+	    this.renderer.setClearColor( 0x000000, 1 );
     	this.renderer.setSize( this.params.width, this.params.height );
 
         this.container.appendChild( this.renderer.domElement );
@@ -162,12 +162,19 @@ class Scene {
 
         this.emitter.on( "loaded", () => {
             let play = document.getElementById("play");
-            play.innerHTML = "Play";
+            play.innerHTML = "PLAY";
             play.style.opacity = 1;
         });
 
-        document.getElementById("play").addEventListener("click", () => {
+        this.emitter.on( "ended", () => {
+            let play = document.getElementById("play");
+            play.innerHTML = "REPLAY";
+            play.style.opacity = 1;
+        });
 
+        document.getElementById("play").addEventListener("click", (e) => {
+
+            e.target.parentNode.style.opacity = 0;
             this.play();
 
         });
@@ -176,9 +183,18 @@ class Scene {
 
     play() {
 
-        this.params.active = true;
-        this.sound.start();
-        this.zoomIn();
+        document.getElementById("title").style.opacity = 0;
+        
+        this.blob.start();
+        
+
+        setTimeout( () => {
+
+            this.sound.start();
+            this.params.active = true;
+            this.zoomIn();     
+            
+        }, 500);
 
     }
 

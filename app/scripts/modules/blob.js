@@ -5,51 +5,55 @@ class Blob {
   constructor( scene, emitter ) {
 
 		this.scene = scene;
-
 		this.emitter = emitter;
 
-		this.particlesCount = 10000;
+    this.radius = 1;
+    this.widthSegments = 175;
+    this.heightSegments = 175;
+    this.amplitudeFloor = 8;
+    this.amplitudeRoof = 8;
+    this.active = false;
 
-        this.radius = 1;
-        this.widthSegments = 175;
-        this.heightSegments = 175;
-        this.amplitudeFloor = 8;
-        this.amplitudeRoof = 8;
+    this.vertexShader = glslify('../../vertex-shaders/blob.vert');
 
-        this.vertexShader = glslify('../../vertex-shaders/blob.vert');
+    this.fragmentShader = glslify('../../fragment-shaders/blob.frag');
 
-        this.fragmentShader = glslify('../../fragment-shaders/blob.frag');
-
-        this.material = new THREE.ShaderMaterial({
-            uniforms: { 
-                "time": { type: "f", value: 0 },
-                "amplitudeFloor": { type: "f", value: this.amplitudeFloor },
-                "amplitudeRoof": { type: "f", value: this.amplitudeRoof }
-            }, 
-            side: THREE.DoubleSide,
-            vertexShader: this.vertexShader,
-            fragmentShader: this.fragmentShader,
-            transparent: true
-        });
+    this.material = new THREE.ShaderMaterial({
+        uniforms: { 
+            "time": { type: "f", value: 0 },
+            "amplitudeFloor": { type: "f", value: this.amplitudeFloor },
+            "amplitudeRoof": { type: "f", value: this.amplitudeRoof }
+        }, 
+        side: THREE.DoubleSide,
+        vertexShader: this.vertexShader,
+        fragmentShader: this.fragmentShader,
+        transparent: true,
+        opacity: 0
+    });
 
 
-        let geometry = new THREE.SphereGeometry( this.radius, this.widthSegments, this.heightSegments );
-		    this.geometry = geometry;
+    let geometry = new THREE.SphereGeometry( this.radius, this.widthSegments, this.heightSegments );
+    this.geometry = geometry;
 
-        this.mesh = new THREE.Mesh( this.geometry, this.material );
+    this.mesh = new THREE.Mesh( this.geometry, this.material );
 
-        this.mesh.position.y = -2.4;
-        this.mesh.rotation.x = 6.4;
+    this.mesh.position.y = -2.4;
+    this.mesh.rotation.x = 6.4;
 
-        this.clock = Date.now();
 
-        this.scene.add( this.mesh );
+  }
+
+  start() {
+
+    this.active = true;
+    this.clock = Date.now();
+    this.scene.add( this.mesh );
 
   }
 
   update( soundData ) { 
 
-  	
+  	if ( !this.active ) return;
 
     if ( soundData ) {
 
@@ -98,6 +102,9 @@ class Blob {
     this.mesh.material.uniforms[ 'amplitudeFloor' ].value = this.amplitudeFloor;
     this.mesh.material.uniforms[ 'amplitudeRoof' ].value = this.amplitudeRoof;
 
+    if ( this.mesh.material.opacity < 1 ) {
+      this.mesh.material.opacity += 0.01;
+    }
   }
 
   getMesh() {

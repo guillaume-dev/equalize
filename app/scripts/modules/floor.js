@@ -1,8 +1,7 @@
 let glslify = require('glslify');
 
 class Floor {
-
-
+  
   constructor( scene, emitter, options = {}) {
 
         this.scene = scene;
@@ -11,7 +10,7 @@ class Floor {
 
         this.particlesCount = 10000;
 
-        this.size = 150;
+        this.size = 60;
         this.widthSegments = 350;
         this.heightSegments = 350;
         this.amplitude = 3;

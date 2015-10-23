@@ -6,7 +6,7 @@ class Roof {
 
         this.scene = scene;
         this.emitter = emitter;
-        this.size = 150;
+        this.size = 65;
         this.widthSegments = 350;
         this.heightSegments = 350;
         this.amplitude = 3;
