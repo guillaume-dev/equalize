@@ -59,7 +59,7 @@ class Roof {
 
       let frequence = Math.abs( average - 128 ) * 10;
 
-      if ( frequence < 15 ) {
+      if ( frequence < 9 ) {
         this.amplitude += 0.3;
       } else {
         this.amplitude -= 0.09;

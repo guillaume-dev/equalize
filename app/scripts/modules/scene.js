@@ -161,20 +161,23 @@ class Scene {
         });
 
         this.emitter.on( "loaded", () => {
+            let title = document.getElementById("title");
             let play = document.getElementById("play");
             play.innerHTML = "PLAY";
-            play.style.opacity = 1;
+            title.style.opacity = 1;
         });
 
         this.emitter.on( "ended", () => {
+            let title = document.getElementById("title");
             let play = document.getElementById("play");
             play.innerHTML = "REPLAY";
-            play.style.opacity = 1;
+            title.style.opacity = 1;
         });
 
         document.getElementById("play").addEventListener("click", (e) => {
 
-            e.target.parentNode.style.opacity = 0;
+            let title = document.getElementById("title");
+            title.style.opacity = 0;
             this.play();
 
         });
@@ -183,16 +186,17 @@ class Scene {
 
     play() {
 
-        document.getElementById("title").style.opacity = 0;
+        
         
         this.blob.start();
+        document.getElementById("title").style.opacity = 0;
+        this.zoomIn();     
         
-
         setTimeout( () => {
 
             this.sound.start();
             this.params.active = true;
-            this.zoomIn();     
+            
             
         }, 500);
 

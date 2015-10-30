@@ -82,7 +82,7 @@ class Blob {
         this.amplitudeFloor = 8;
       }
 
-      if ( frequence < 15 ) {
+      if ( frequence < 9 ) {
         this.amplitudeRoof += 0.3;
       } else {
         this.amplitudeRoof -= 0.09;
