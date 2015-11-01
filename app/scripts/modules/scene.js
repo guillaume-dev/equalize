@@ -3,8 +3,11 @@ import { Audio } from './audio';
 import { Blob } from './blob';
 import { Floor } from './floor';
 import { Roof } from './roof';
+import { Utils } from './utils';
 
 let Controls = require('orbit-controls');
+let EffectComposer = require('three-effectcomposer')(THREE);
+let utils = new Utils();
 
 class Scene {
 
@@ -19,6 +22,7 @@ class Scene {
         this.container = options.container || document.body;
         this.controls = null;
         this.keyboard = null;
+        this.frequenceMax = 0;
 
     	this.params = {
     		active: options.active || false,
@@ -73,6 +77,14 @@ class Scene {
 	    this.renderer.setClearColor( 0x000000, 1 );
     	this.renderer.setSize( this.params.width, this.params.height );
 
+        this.composer = new EffectComposer( this.renderer );
+        this.composer.addPass(new EffectComposer.RenderPass(this.scene, this.camera ))
+
+        this.RGBShift = new EffectComposer.ShaderPass(THREE.RGBShiftShader);
+        this.RGBShift.renderToScreen = false;
+
+        this.composer.addPass(this.RGBShift);
+
         this.container.appendChild( this.renderer.domElement );
 
         this.controls = new Controls({
@@ -123,18 +135,27 @@ class Scene {
         
         window.requestAnimationFrame( this.animate.bind(this) );
 
+        let frequence = this.sound.getData();
+
         if (this.params.active) {
 
             let objectsLength = this.objects.length;
             for (let i = 0; i < objectsLength; i++) {
-                this.objects[ i ].update( this.sound.getData() );
+                this.objects[ i ].update( frequence );
             };
 
         } else {
             this.blob.update();
         }
 
-        this.render( ts );
+        if ( frequence > 70 ) {
+            this.RGBShift.renderToScreen = true;
+            this.composer.render();
+            this.RGBShift.uniforms.amount.value = Math.random() * 0.08;
+            this.RGBShift.uniforms.angle.value = utils.randomRange( 10, 180 );
+        } else {
+            this.render( ts );
+        }
     }
 
     render() {

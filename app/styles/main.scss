@@ -33,15 +33,51 @@ canvas {
 }
 
 button {
-    background: rgba(1,1,1,0.8);
+    position: relative;
+    background: none;
     color: white;
     border: none;
     width: 150px;
     text-align: center;
     cursor: pointer;
 
-    &:active {
+    &:active, &:focus {
         outline: none;
+        border: none;
+    }
+
+    &:before {
+        content: "";
+        position: absolute;
+        width: 0%;
+        height: 1px;
+        left: 0%;
+        top: -3px;
+        transition: width 0.3s;
+        background: white;
+        z-index: 0;
+    }
+
+    &:after {
+        content: "";
+        position: absolute;
+        width: 0%;
+        right: 0%;
+        bottom: -3px;
+        height: 1px;
+        transition: width 0.3s;
+        background: white;
+        z-index: 0;
+    }
+
+    &:hover:before {
+        width: 100%;
+        transition: width 0.3s;
+    }
+
+    &:hover:after {
+        width: 100%;
+        transition: width 0.3s;
     }
 }
 
@@ -58,12 +94,13 @@ button {
     }
 }
 
-
-#infos {
-    //display: none;
-
-    p {
-        opacity: 0; 
+#about {
+    position: absolute;
+    left: 10px;
+    bottom: 0px;
+    
+    & a {
+        color: white;
     }
 }
 

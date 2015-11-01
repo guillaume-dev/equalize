@@ -9,6 +9,8 @@ varying vec3 vNormal, vTangent, vBinormal;
 varying vec3 vPosition;
 varying float z;
 
+float distMax = 30.0;
+
 void main() {
 
     gl_PointSize = 1.;

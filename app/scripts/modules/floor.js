@@ -36,7 +36,7 @@ class Floor {
 
         this.mesh = new THREE.Mesh( this.geometry, this.material );
 
-        this.mesh.position.y = -10.2;
+        this.mesh.position.y = -20;
 
         this.mesh.rotation.x = 1.4;
         this.mesh.rotation.z = -1.2;
@@ -47,20 +47,9 @@ class Floor {
 
   }
 
-  update( soundData ) {
+  update( frequence ) {
 
-    if ( soundData ) {
-
-      let time = soundData.time;
-      let average = 0;
-
-      for(var i = 0; i < time.length; i++) {
-          average += time[ i ];
-      }
-
-      average /= 512;
-
-      let frequence = Math.abs( average - 128 ) * 10;
+    if ( frequence ) {
 
       if ( frequence > 15 ) {
         this.amplitude += 0.1;

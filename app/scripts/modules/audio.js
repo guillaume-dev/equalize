@@ -9,6 +9,7 @@ class Audio  {
         this.context = new AudioContext();
 
         this.bufferSize = 1024; 
+        this.buffer;
 
         this.analyser = this.context.createAnalyser();
         this.analyser.fftSize = this.bufferSize;
@@ -34,34 +35,50 @@ class Audio  {
     onLoad() {
         this.context.decodeAudioData( this.request.response, ( buffer ) => {
 
-            this.source = this.context.createBufferSource();
-            this.source.connect( this.analyser );
-            this.source.buffer = buffer;
-            this.source.connect( this.context.destination );
-
-            this.source.onended = () => {
-                this.emitter.emit( "ended" );
-                console.log("ended");
-            };
+            this.buffer = buffer;
 
             this.emitter.emit( "loaded" );
             console.log('loaded');
-        }, () => {
-            console.log( "error" )
-        } );
+        }, () => {} );
     }
 
     start() {
+        this.source = this.context.createBufferSource();
+        this.source.connect( this.analyser );
+        this.source.buffer = this.buffer;
+        this.source.connect( this.context.destination );
         this.source.start( 0 );
+
+        this.source.onended = () => {
+            this.emitter.emit( "ended" );
+            console.log("ended");
+        };
     }
 
     getData() {
+
         this.analyser.getByteFrequencyData( this.dataFreqArray );
         this.analyser.getByteTimeDomainData( this.dataTimeArray );
-        return {
-          freq: this.dataFreqArray, // from 0 - 256, no sound = 0
-          time: this.dataTimeArray // from 0 -256, no sound = 128
-        };
+
+        let time = this.dataTimeArray;
+        let length = time.length;
+        let average = 0;
+
+        for(var i = 0; i < length; i++) {
+          average += this.dataTimeArray[ i ];
+        }
+
+        average /= 512;
+
+        let frequence = Math.abs( average - 128 ) * 10;
+
+        return frequence;
+        // this.analyser.getByteFrequencyData( this.dataFreqArray );
+        // this.analyser.getByteTimeDomainData( this.dataTimeArray );
+        // return {
+        //   freq: this.dataFreqArray, // from 0 - 256, no sound = 0
+        //   time: this.dataTimeArray // from 0 -256, no sound = 128
+        // };
     }
 
 }

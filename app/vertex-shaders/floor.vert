@@ -9,6 +9,8 @@ varying vec3 vNormal, vTangent, vBinormal;
 varying vec3 vPosition;
 varying float z;
 
+float distMax = 30.0;
+
 void main() {
 
     gl_PointSize = 1.;
@@ -28,9 +30,9 @@ void main() {
 
     vec3 newPosition = position;
 
-    if ( dist < 30.0) {
+    if ( dist < distMax) {
 
-      float amplitudeRatio = ( abs( dist - 30.0 ) + ( amplitude ) * 4.0 ) / 30.0;
+      float amplitudeRatio = ( abs( dist - distMax ) + ( amplitude ) * 4.0 ) / distMax;
       float elevation = amplitudeRatio;
       
       displacement += pnoise_1_5( 8. * position + vec3( 0, easing * time * 20., 0 ), vec3( 100. ) ) * .1 * noise - elevation;// * 0.008 ));//( amplitude - ( dist / 30.0 ) );

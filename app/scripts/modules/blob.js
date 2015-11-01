@@ -7,7 +7,7 @@ class Blob {
 		this.scene = scene;
 		this.emitter = emitter;
 
-    this.radius = 1;
+    this.radius = 5;
     this.widthSegments = 175;
     this.heightSegments = 175;
     this.amplitudeFloor = 8;
@@ -51,22 +51,11 @@ class Blob {
 
   }
 
-  update( soundData ) { 
+  update( frequence ) { 
 
   	if ( !this.active ) return;
 
-    if ( soundData ) {
-
-      let time = soundData.time;
-      let average = 0;
-
-      for(var i = 0; i < time.length; i++) {
-          average += time[ i ];
-      }
-
-      average /= 512;
-
-      let frequence = Math.abs( average - 128 ) * 10;
+    if ( frequence ) {
 
       if ( frequence > 15 ) {
         this.amplitudeFloor += 0.1;
@@ -82,7 +71,7 @@ class Blob {
         this.amplitudeFloor = 8;
       }
 
-      if ( frequence < 9 ) {
+      if ( frequence > 5 && frequence < 9 ) {
         this.amplitudeRoof += 0.3;
       } else {
         this.amplitudeRoof -= 0.09;

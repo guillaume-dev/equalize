@@ -33,7 +33,7 @@ class Roof {
 
         this.mesh = new THREE.Mesh( this.geometry, this.material );
 
-        this.mesh.position.y = 5;
+        this.mesh.position.y = 20;
         
         this.mesh.rotation.x = 1.4;
         this.mesh.rotation.z = -1.2;
@@ -44,22 +44,11 @@ class Roof {
 
   }
 
-  update( soundData ) {
+  update( frequence ) {
 
-    if ( soundData ) {
+    if ( frequence ) {
 
-      let time = soundData.time;
-      let average = 0;
-
-      for(var i = 0; i < time.length; i++) {
-          average += time[ i ];
-      }
-
-      average /= 512;
-
-      let frequence = Math.abs( average - 128 ) * 10;
-
-      if ( frequence < 9 ) {
+      if ( frequence > 5 && frequence < 9 ) {
         this.amplitude += 0.3;
       } else {
         this.amplitude -= 0.09;

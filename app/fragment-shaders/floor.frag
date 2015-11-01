@@ -8,6 +8,7 @@ varying float z;
 uniform float amplitude;
 uniform float time;
 
+float distMax = 30.0;
 vec3 color;
 
 void main( void )
@@ -19,9 +20,9 @@ void main( void )
 
     float dist = distance( vec2(vPosition.x, vPosition.y), vec2( 0.0, 0.0 ) );
 
-    if ( dist < 30.0 ) {
+    if ( dist < distMax ) {
 
-        color = clamp( (amplitude * 0.008 * time), 0.5, 1.0 ) * diffuseColor * ( abs( dist - 30.0 ) / 30.0 ) * 3.14;
+        color = clamp( (amplitude * 0.008 * time), 0.5, 1.0 ) * diffuseColor * ( abs( dist - distMax ) / distMax ) * 3.14;
 
     } else {
         /* alpha = sin(vUv.y * 3.14) / 2.0;
